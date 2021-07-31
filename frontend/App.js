@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Image, View, Button, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
+// import * as FileSystem from "expo-file-system";
 import { GET_TEXT, GET_IMAGE, SEND_IMAGE } from "./api";
 // const GET_TEXT = () => {
 //   fetch("http://localhost:5000/function1", {
@@ -55,35 +55,35 @@ const cameraImage = async () => {
   return false;
 };
 
-const uploadImage = async (ImageURL) => {
-  // Check if any file is selected or not
-  if (ImageURL != null) {
-    // If file selected then create FormData
-    const fileToUpload = ImageURL;
-    const data = new FormData();
-    data.append("name", "Image Upload");
-    console.log("fileToUpload.uri: ", fileToUpload.uri);
-    const base64 = await FileSystem.readAsStringAsync(fileToUpload.uri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    data.append("file_attachment", base64);
-    // Please change file upload URL
-    let res = await fetch("http://127.0.0.1:5000/function3", {
-      method: "post",
-      body: data,
-      headers: {
-        "Content-Type": "multipart/form-data; ",
-      },
-    });
-    let responseJson = await res.json();
-    if (responseJson.status == 1) {
-      alert("Upload Successful");
-    }
-  } else {
-    // If no file selected the show alert
-    alert("Please Select File first");
-  }
-};
+// const uploadImage = async (ImageURL) => {
+//   // Check if any file is selected or not
+//   if (ImageURL != null) {
+//     // If file selected then create FormData
+//     const fileToUpload = ImageURL;
+//     const data = new FormData();
+//     data.append("name", "Image Upload");
+//     // console.log("fileToUpload.uri: ", fileToUpload.uri);
+//     const base64 = await FileSystem.readAsStringAsync(fileToUpload.uri, {
+//       encoding: FileSystem.EncodingType.Base64,
+//     });
+//     data.append("file_attachment", base64);
+//     // Please change file upload URL
+//     let res = await fetch("http://140.112.106.88:8081/function3", {
+//       method: "post",
+//       body: data,
+//       headers: {
+//         "Content-Type": "multipart/form-data; ",
+//       },
+//     });
+//     let responseJson = await res.json();
+//     if (responseJson.status == 1) {
+//       alert("Upload Successful");
+//     }
+//   } else {
+//     // If no file selected the show alert
+//     alert("Please Select File first");
+//   }
+// };
 
 export default function App() {
   const [ImageURL, setImageURL] = useState(require("./cat.jpg"));
@@ -134,7 +134,7 @@ export default function App() {
       <Button
         title="send device file"
         onPress={async () => {
-          await uploadImage(ImageURL);
+          await SEND_IMAGE(ImageURL);
         }}
       ></Button>
       <Image source={ImageURL} style={{ width: 400, height: 200 }} />
