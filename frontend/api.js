@@ -9,13 +9,35 @@ export async function GET_TEXT() {
     .catch((err) => console.log(err));
 }
 
-export async function GET_IMAGE() {
-  const base64Image = await axios
-    .get("/function2", { responseType: "arraybuffer" })
-    .then((response) => {
-      return Buffer.from(response.data, "binary").toString("base64");
+export async function GET_IMAGE(CaseNo) {
+  const photo = await axios
+    .get("/function2", {
+      params: {
+        caseno: CaseNo,
+      },
+      responseType: "arraybuffer",
+    })
+    .then((res) => {
+      metadata = {
+        trademark_name: decodeURI(res.headers.trademark_name),
+        sdate: res.headers.sdate,
+        edate: res.headers.edate,
+        bchinese: decodeURI(res.headers.bchinese),
+        class_: res.headers.class_,
+        achinese: decodeURI(res.headers.achinese),
+        aenglish: res.headers.aenglish,
+        address: decodeURI(res.headers.address),
+      };
+      // console.log("metadata:", metadata);
+      return {
+        base64Image: Buffer.from(res.data, "binary").toString("base64"),
+        metadata: metadata,
+      };
+    })
+    .then((x) => {
+      x.uri = `data:image/jpeg;base64,${x.base64Image}`;
+      return x;
     });
-  var photo = { uri: `data:image/jpeg;base64,${base64Image}` };
   return photo;
 }
 
@@ -23,11 +45,10 @@ export async function SEND_IMAGE(ImageURL) {
   // Check if any file is selected or not
   if (ImageURL != null) {
     // If file selected then create FormData
-    const fileToUpload = ImageURL;
     const data = new FormData();
-    data.append("name", "Image Upload");
-    // console.log("fileToUpload.uri: ", fileToUpload.uri);
-    const base64 = await FileSystem.readAsStringAsync(fileToUpload.uri, {
+    data.append("name", Date.now());
+    // console.log("ImageURL.uri: ", ImageURL.uri);
+    const base64 = await FileSystem.readAsStringAsync(ImageURL.uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
     data.append("file_attachment", base64);
@@ -37,7 +58,6 @@ export async function SEND_IMAGE(ImageURL) {
       headers: { "Content-Type": "multipart/form-data; " },
     });
     // console.log(res.data);
-    // let responseJson = await res.json();
     if (res.data.status == 1) {
       alert("Upload Successful");
     }
