@@ -48,9 +48,6 @@ def fetchdata(ID):
 
     return res
 
-
-
-
 @app.route('/function1', methods=["GET"])
 def function1():
     return jsonify({"Hello":"World"})
@@ -71,7 +68,66 @@ def function3():
         f.write(img)    
     return jsonify({"status":1})
 
+import io
+from base64 import encodebytes
+from PIL import Image   
 
+def fetchdata2(ID):
+    conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
+    cur = conn.cursor()
+    cur.execute("SELECT doc,trademark_name,sdate,edate FROM trademark WHERE caseno = %s"%ID)
+    main = cur.fetchall()
+    cur.execute("SELECT bchinese FROM rca WHERE caseno = %s"%ID)
+    rca = cur.fetchall()
+    cur.execute("SELECT class FROM rcc WHERE caseno = %s"%ID)
+    rcc = cur.fetchall()
+    cur.execute("SELECT achinese,aenglish,address FROM rco WHERE caseno = %s"%ID)
+    rco = cur.fetchall()
+    cur.execute("SELECT filename FROM rcp WHERE caseno = %s"%ID)
+    rcp = cur.fetchall()
+    conn.close()
+
+    [doc,trademark_name,sdate,edate] = main[0]
+    [bchinese] = rca[0]
+    [class_] = rcc[0]
+    [achinese,aenglish,address] = rco[0]
+    [filename] = rcp[0]   
+
+    result = dict()
+    result["Path"] = '/service/trademark/raw_register_data/' + doc + "/" + filename
+    # print("Path: ", result["Path"], file=sys.stdout)
+    result["metadata"] = {
+        'trademark_name': trademark_name,
+        'sdate': sdate,
+        'edate': edate,
+        'bchinese': bchinese,
+        'class_': class_,
+        'achinese': achinese,
+        'aenglish': aenglish,
+        'address': address
+    }
+    # print("metadata: ", result["metadata"], file=sys.stdout)
+    return result
+
+
+@app.route('/function4', methods=['GET'])
+def function4():
+    result_list = []
+    for caseno in ["104029750", "104029752"]:
+        result_list.append(fetchdata2(caseno))
+    img_list = []
+    metadata_list = []
+    for r in result_list:
+        pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
+        byte_arr = io.BytesIO()
+        pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+        encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
+        img_list.append(encoded_img)
+        metadata_list.append(r["metadata"])
+    return jsonify({
+        'images': img_list,
+        'metadatas': metadata_list
+    })
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, debug=True)

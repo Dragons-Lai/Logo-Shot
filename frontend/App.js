@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Image, View, Button, Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { GET_TEXT, GET_IMAGE, SEND_IMAGE } from "./api";
+import { GET_TEXT, GET_IMAGE, SEND_IMAGE, GET_IMAGE2 } from "./api";
 
 // ImagePicker: https://docs.expo.io/versions/latest/sdk/imagepicker/
 const pickImage = async () => {
@@ -60,7 +60,7 @@ export default function App() {
         title="receive remote file"
         onPress={async () => {
           var photo = await GET_IMAGE("104029750");
-          console.log(photo.metadata);
+          // console.log(photo.metadata);
           setImageURL({ uri: photo.uri });
         }}
       ></Button>
@@ -86,6 +86,15 @@ export default function App() {
         title="send device file"
         onPress={async () => {
           await SEND_IMAGE(ImageURL);
+        }}
+      ></Button>
+      <Button
+        title="GET_IMAGE2"
+        onPress={async () => {
+          // await GET_IMAGE2();
+          var photo = await GET_IMAGE2();
+          // console.log({ uri: photo });
+          setImageURL({ uri: photo });
         }}
       ></Button>
       <Image source={ImageURL} style={{ width: 400, height: 200 }} />

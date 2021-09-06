@@ -1,3 +1,0 @@
-1. 回傳圖片metadata done
-2. 路由控制
-3. CSS排版

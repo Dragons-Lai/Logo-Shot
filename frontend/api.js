@@ -68,3 +68,19 @@ export async function SEND_IMAGE(ImageURL) {
 
   return;
 }
+
+export async function GET_IMAGE2() {
+  const photo = await axios
+    .get("/function4", {
+      responseType: "json",
+    })
+    .then((res) => {
+      // console.log(res.data.images[0]);
+      // console.log(res.data.images[1]);
+      console.log(res.data.metadatas[0]);
+      console.log(res.data.metadatas[1]);
+      var base64Image = res.data.images[1];
+      return `data:image/jpeg;base64,${base64Image}`;
+    });
+  return photo;
+}
