@@ -70,17 +70,27 @@ export async function SEND_IMAGE(ImageURL) {
 }
 
 export async function GET_IMAGE2() {
-  const photo = await axios
+  return await axios
     .get("/function4", {
       responseType: "json",
     })
     .then((res) => {
       // console.log(res.data.images[0]);
       // console.log(res.data.images[1]);
-      console.log(res.data.metadatas[0]);
-      console.log(res.data.metadatas[1]);
-      var base64Image = res.data.images[1];
-      return `data:image/jpeg;base64,${base64Image}`;
+      // console.log(res.data.metadatas[0]);
+      // console.log(res.data.metadatas[1]);
+      const metadatas = res.data.metadatas;
+      const base64Images = res.data.base64Images.map((base64Image) => `data:image/jpeg;base64,${base64Image}`);
+      let photos = {
+        metadatas: [],
+        base64Images: [],
+      };
+      var steps = metadatas.length / 2;
+      for (var i = 0; i < steps; i++) {
+        photos.metadatas.push([metadatas[2 * i], metadatas[2 * i + 1]]);
+        photos.base64Images.push([base64Images[2 * i], base64Images[2 * i + 1]]);
+      }
+      console.log(photos.metadatas);
+      return photos;
     });
-  return photo;
 }

@@ -63,6 +63,7 @@ def function3():
     # print(request.method, file=sys.stdout)   
     print(request.form['name'], file=sys.stdout)   
     photo = request.form["file_attachment"]
+    # print(type(photo), file=sys.stdout) # <class 'str'>
     with open("/home/dragons/flask/backend/{}.png".format(request.form['name']), "wb") as f:
         img = base64.decodebytes(photo.encode('ascii'))
         f.write(img)    
@@ -97,6 +98,7 @@ def fetchdata2(ID):
     result["Path"] = '/service/trademark/raw_register_data/' + doc + "/" + filename
     # print("Path: ", result["Path"], file=sys.stdout)
     result["metadata"] = {
+        'caseno': ID, 
         'trademark_name': trademark_name,
         'sdate': sdate,
         'edate': edate,
@@ -113,19 +115,19 @@ def fetchdata2(ID):
 @app.route('/function4', methods=['GET'])
 def function4():
     result_list = []
-    for caseno in ["104029750", "104029752"]:
+    for caseno in ["106027779", "106027770", "106027771", "106027772", "106027773", "106027774", "106027775", "106027776", "106027777", "106027778"]:
         result_list.append(fetchdata2(caseno))
-    img_list = []
+    base64Image_list = []
     metadata_list = []
     for r in result_list:
         pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
         byte_arr = io.BytesIO()
         pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
         encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
-        img_list.append(encoded_img)
+        base64Image_list.append(encoded_img)
         metadata_list.append(r["metadata"])
     return jsonify({
-        'images': img_list,
+        'base64Images': base64Image_list,
         'metadatas': metadata_list
     })
 
