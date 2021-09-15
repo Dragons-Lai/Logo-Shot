@@ -41,13 +41,9 @@ export default function App() {
   useEffect(() => {
     (async () => {
       if (Platform.OS !== "web") {
-        const permission1 =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const permission1 = await ImagePicker.requestMediaLibraryPermissionsAsync();
         const permission2 = await ImagePicker.requestCameraPermissionsAsync();
-        if (
-          (permission1.status !== "granted") |
-          (permission2.status !== "granted")
-        ) {
+        if ((permission1.status !== "granted") | (permission2.status !== "granted")) {
           alert("Sorry, we need camera roll permissions to make this work!");
         }
       }
