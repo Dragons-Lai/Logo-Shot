@@ -3,9 +3,7 @@ import { Platform } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Homepage from "./src/Containers/HomePage";
-import SearchResults from "./src/Containers/SearchResults";
-import ImageDetails from "./src/Containers/ImageDetails";
+import { HomePage, HomePage2, SearchResults, ImageDetails } from "./src/Containers/";
 
 const AppStack = createStackNavigator();
 
@@ -24,8 +22,9 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <AppStack.Navigator initialRouteName="HomePage">
-        <AppStack.Screen name="HomePage" component={Homepage} />
+      <AppStack.Navigator initialRouteName="HomePage2">
+        <AppStack.Screen name="HomePage" component={HomePage} />
+        <AppStack.Screen name="HomePage2" component={HomePage2} />
         <AppStack.Screen name="SearchResults" component={SearchResults} />
         <AppStack.Screen name="ImageDetails" component={ImageDetails} />
       </AppStack.Navigator>

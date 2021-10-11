@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Image, View, Button } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import cat from "../imgs/cat.jpg";
+import { images } from "../../constant/";
 import { GET_TEXT, GET_IMAGE, SEND_IMAGE, GET_IMAGE2 } from "../api";
 
 // ImagePicker: https://docs.expo.io/versions/latest/sdk/imagepicker/
@@ -38,7 +38,7 @@ const cameraImage = async () => {
 };
 
 export default function HomePage({ navigation }) {
-  const [ImageURL, setImageURL] = useState(cat);
+  const [ImageURL, setImageURL] = useState(images.cat);
   return (
     <View style={styles.HomePage}>
       {/* <Button title="receive remote text" onPress={() => GET_TEXT()}></Button> */}
