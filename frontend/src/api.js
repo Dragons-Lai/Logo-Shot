@@ -90,7 +90,7 @@ export async function GET_IMAGE2() {
         photos.metadatas.push([metadatas[2 * i], metadatas[2 * i + 1]]);
         photos.base64Images.push([base64Images[2 * i], base64Images[2 * i + 1]]);
       }
-      console.log(photos.metadatas);
+      // console.log(photos.metadatas);
       return photos;
     });
 }

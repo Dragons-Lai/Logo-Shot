@@ -59,6 +59,10 @@ export default function HomePage({ navigation }) {
         onPress={async () => {
           var photo = await pickImage();
           if (photo) setImageURL(photo);
+          // await SEND_IMAGE(ImageURL); //這時候上行的setImageURL(photo)可能尚未執行完成，導致ImageURL.uri為null
+          // await SEND_IMAGE(photo);
+          var photos = await GET_IMAGE2();
+          navigation.push("SearchResults", { photos: photos });
         }}
       ></Button>
       <Button
@@ -66,22 +70,25 @@ export default function HomePage({ navigation }) {
         onPress={async () => {
           var photo = await cameraImage();
           if (photo) setImageURL(photo);
+          // await SEND_IMAGE(ImageURL); //這時候上行的setImageURL(photo)可能尚未執行完成，導致ImageURL.uri為null
+          // await SEND_IMAGE(photo);
+          var photos = await GET_IMAGE2();
+          navigation.push("SearchResults", { photos: photos });
         }}
       ></Button>
-      <Button
+      {/* <Button
         title="send device file"
         onPress={async () => {
           await SEND_IMAGE(ImageURL);
         }}
-      ></Button>
-      <Button
+      ></Button> */}
+      {/* <Button
         title="GET_IMAGE2"
         onPress={async () => {
           var photos = await GET_IMAGE2();
-          // console.log({ uri: photo });
           navigation.push("SearchResults", { photos: photos });
         }}
-      ></Button>
+      ></Button> */}
       {/* iPhone11/XR screen resolution: width = 414, height = 896 */}
       <Image source={ImageURL} style={{ width: "50%", height: "25%" }} />
     </View>
