@@ -2,44 +2,44 @@ global.Buffer = global.Buffer || require("buffer").Buffer;
 import axios from "./axios";
 import * as FileSystem from "expo-file-system";
 
-export async function GET_TEXT() {
-  axios
-    .get("/function1")
-    .then((res) => console.log(res.data))
-    .catch((err) => console.log(err));
-}
+// export async function GET_TEXT() {
+//   axios
+//     .get("/function1")
+//     .then((res) => console.log(res.data))
+//     .catch((err) => console.log(err));
+// }
 
-export async function GET_IMAGE(CaseNo) {
-  const photo = await axios
-    .get("/function2", {
-      params: {
-        caseno: CaseNo,
-      },
-      responseType: "arraybuffer",
-    })
-    .then((res) => {
-      metadata = {
-        trademark_name: decodeURI(res.headers.trademark_name),
-        sdate: res.headers.sdate,
-        edate: res.headers.edate,
-        bchinese: decodeURI(res.headers.bchinese),
-        class_: res.headers.class_,
-        achinese: decodeURI(res.headers.achinese),
-        aenglish: res.headers.aenglish,
-        address: decodeURI(res.headers.address),
-      };
-      // console.log("metadata:", metadata);
-      return {
-        base64Image: Buffer.from(res.data, "binary").toString("base64"),
-        metadata: metadata,
-      };
-    })
-    .then((x) => {
-      x.uri = `data:image/jpeg;base64,${x.base64Image}`;
-      return x;
-    });
-  return photo;
-}
+// export async function GET_IMAGE(CaseNo) {
+//   const photo = await axios
+//     .get("/function2", {
+//       params: {
+//         caseno: CaseNo,
+//       },
+//       responseType: "arraybuffer",
+//     })
+//     .then((res) => {
+//       metadata = {
+//         trademark_name: decodeURI(res.headers.trademark_name),
+//         sdate: res.headers.sdate,
+//         edate: res.headers.edate,
+//         bchinese: decodeURI(res.headers.bchinese),
+//         class_: res.headers.class_,
+//         achinese: decodeURI(res.headers.achinese),
+//         aenglish: res.headers.aenglish,
+//         address: decodeURI(res.headers.address),
+//       };
+//       // console.log("metadata:", metadata);
+//       return {
+//         base64Image: Buffer.from(res.data, "binary").toString("base64"),
+//         metadata: metadata,
+//       };
+//     })
+//     .then((x) => {
+//       x.uri = `data:image/jpeg;base64,${x.base64Image}`;
+//       return x;
+//     });
+//   return photo;
+// }
 
 export async function SEND_IMAGE(ImageURL) {
   // Check if any file is selected or not

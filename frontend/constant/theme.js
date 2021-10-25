@@ -30,7 +30,7 @@ export const SIZES = {
   padding: 24,
 
   // Font sizes
-  largeTitle: 50,
+  largeTitle: 44,
   h1: 30,
   h2: 22,
   h3: 16,

@@ -13,22 +13,22 @@ export default function SearchResults({ route, navigation }) {
                 <TouchableOpacity
                   style={styles.searchResultsButton}
                   onPress={() => {
-                    navigation.push("ImageDetails", { metadatas: route.params.photos.metadatas[idx][0] });
+                    navigation.push("ImageDetails", { uri: values[0], metadatas: route.params.photos.metadatas[idx][0] });
                   }}
                 >
                   <Image source={{ uri: values[0] }} style={styles.searchResultsImage} />
-                  <Text style={styles.searchResultsText}>{route.params.photos.metadatas[idx][0].caseno}</Text>
+                  <Text style={styles.searchResultsText}>{route.params.photos.metadatas[idx][0].trademark_name}</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.searchResultsBox}>
                 <TouchableOpacity
                   style={styles.searchResultsButton}
                   onPress={() => {
-                    navigation.push("ImageDetails", { metadatas: route.params.photos.metadatas[idx][1] });
+                    navigation.push("ImageDetails", { uri: values[1], metadatas: route.params.photos.metadatas[idx][1] });
                   }}
                 >
                   <Image source={{ uri: values[1] }} style={styles.searchResultsImage} />
-                  <Text style={styles.searchResultsText}>{route.params.photos.metadatas[idx][1].caseno}</Text>
+                  <Text style={styles.searchResultsText}>{route.params.photos.metadatas[idx][1].trademark_name}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -45,11 +45,11 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
-    backgroundColor: "yellow",
+    backgroundColor: "white",
   },
   searchResults: {
     borderWidth: 1,
-    backgroundColor: "orange",
+    backgroundColor: "white",
   },
   searchResultsRow: {
     flexDirection: "row",

@@ -4,6 +4,7 @@ import sys
 import base64
 import psycopg2
 from urllib.parse import quote
+import time
 app = Flask(__name__)
 
 def fetchdata(ID):
@@ -45,7 +46,6 @@ def fetchdata(ID):
     # img = mpimg.imread(Path)
     # imgplot = plt.imshow(img)
     # plt.show()
-
     return res
 
 @app.route('/function1', methods=["GET"])
@@ -60,6 +60,7 @@ def function2():
     # return send_file("./rabbit.jpeg", mimetype="image/jpeg")
 @app.route('/function3', methods=['POST'])
 def function3():
+    startTime = time.time()
     # print(request.method, file=sys.stdout)   
     print(request.form['name'], file=sys.stdout)   
     photo = request.form["file_attachment"]
@@ -67,6 +68,8 @@ def function3():
     with open("/home/dragons/flask/backend/{}.png".format(request.form['name']), "wb") as f:
         img = base64.decodebytes(photo.encode('ascii'))
         f.write(img)    
+    EndTime = time.time()
+    print("Spent Time(function3): {}s".format(EndTime - startTime), file=sys.stdout)   
     return jsonify({"status":1})
 
 import io
@@ -108,12 +111,13 @@ def fetchdata2(ID):
         'aenglish': aenglish,
         'address': address
     }
-    # print("metadata: ", result["metadata"], file=sys.stdout)
+    # print("metadata: ", result["metadata"], file=sys.stdout) 
     return result
 
 
 @app.route('/function4', methods=['GET'])
 def function4():
+    startTime = time.time()
     result_list = []
     for caseno in ["106027779", "106027770", "106027771", "106027772", "106027773", "106027774", "106027775", "106027776", "106027777", "106027778"]:
         result_list.append(fetchdata2(caseno))
@@ -126,6 +130,8 @@ def function4():
         encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
         base64Image_list.append(encoded_img)
         metadata_list.append(r["metadata"])
+    EndTime = time.time()
+    print("Time Spent(function4): {}s".format(EndTime - startTime), file=sys.stdout)           
     return jsonify({
         'base64Images': base64Image_list,
         'metadatas': metadata_list

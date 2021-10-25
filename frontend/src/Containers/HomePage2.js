@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 import { useFonts } from "expo-font";
-import { GET_IMAGE2 } from "../api";
+import { SEND_IMAGE, GET_IMAGE2 } from "../api";
 
 // ImagePicker: https://docs.expo.io/versions/latest/sdk/imagepicker/
 const pickImage = async () => {
@@ -78,7 +78,7 @@ export default function HomePage2({ navigation }) {
                   var photo = await cameraImage();
                   if (photo) setImageURL(photo);
                   // await SEND_IMAGE(ImageURL); //這時候上一行的setImageURL(photo)可能尚未執行完成，導致ImageURL.uri為null
-                  // await SEND_IMAGE(photo);
+                  await SEND_IMAGE(photo);
                   var photos = await GET_IMAGE2();
                   navigation.push("SearchResults", { photos: photos });
                 }}
@@ -119,7 +119,7 @@ export default function HomePage2({ navigation }) {
                   var photo = await pickImage();
                   if (photo) setImageURL(photo);
                   // await SEND_IMAGE(ImageURL); //這時候上一行的setImageURL(photo)可能尚未執行完成，導致ImageURL.uri為null
-                  // await SEND_IMAGE(photo);
+                  await SEND_IMAGE(photo);
                   var photos = await GET_IMAGE2();
                   navigation.push("SearchResults", { photos: photos });
                 }}
