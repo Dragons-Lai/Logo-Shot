@@ -5,7 +5,15 @@ import base64
 import psycopg2
 from urllib.parse import quote
 import time
+import random
 app = Flask(__name__)
+
+conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
+cur = conn.cursor()
+cur.execute("SELECT caseno FROM trademark fetch first 1000 rows only")
+caseno_1000 = cur.fetchall()
+caseno_1000 = [x[0] for x in caseno_1000]
+conn.close()
 
 def fetchdata(ID):
     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -115,12 +123,62 @@ def fetchdata2(ID):
     return result
 
 
+# trademark
+trademark_columns = ["doc", "caseno", "registerno", "trademark_name", "trademark_design", "filing_date", "censor", "priority_date", "sdate", "edate", "word_description", "mark_type", "memo", "wavpath", "servicemark"]
+# rca(agent)
+rca_columns = ["caseno", "bchinese"]
+# rcc(class)
+rcc_columns = ["caseno", "enforcement_rules", "class", "goods_denomination"]
+# rco(owner)
+rco_columns = ["caseno", "achinese", "aenglish", "address"]
+# rcp(picture)
+rcp_columns = ["caseno", "filename", "displayname", "path"]
+
+def sql_command(cur, colnames, tablename, caseno):
+    colnames = ",".join(colnames)
+    cur.execute(
+        "SELECT {} \
+        FROM {} \
+        WHERE caseno = {}".format(colnames, tablename, caseno))    
+    return cur.fetchall()
+
+def fetchdata3(ID):
+    conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
+    cur = conn.cursor()
+    main = sql_command(cur, trademark_columns, "trademark", str(ID))
+    rca = sql_command(cur, rca_columns, "rca", str(ID))
+    rcc = sql_command(cur, rcc_columns, "rcc", str(ID))
+    rco = sql_command(cur, rco_columns, "rco", str(ID))
+    rcp = sql_command(cur, rcp_columns, "rcp", str(ID))
+    conn.close()
+#     print("main: ", main)
+#     print("rca: ", rca)
+#     print("rcc: ", rcc)
+#     print("rco: ", rco)
+#     print("rcp: ", rcp)    
+    
+    metadata = dict()
+    data_list = [main, rca, rcc, rco, rcp]
+    columns_list = [trademark_columns, rca_columns, rcc_columns, rco_columns, rcp_columns]
+    for data, columns in zip(data_list, columns_list):
+        for i in range(len(columns)):
+            metadata[columns[i]] = "/".join([str(d[i]) for d in data])
+#             print(metadata[columns[i]])
+    metadata["caseno"] = str(ID)
+
+    result = dict()
+    result["Path"] = '/service/trademark/raw_register_data/' + metadata['doc'] + "/" + metadata['filename']
+    # print("Path: ", result["Path"], file=sys.stdout)
+    result["metadata"] = metadata
+    # print("metadata: ", result["metadata"], file=sys.stdout) 
+    return result
+
 @app.route('/function4', methods=['GET'])
 def function4():
     startTime = time.time()
     result_list = []
-    for caseno in ["106027779", "106027770", "106027771", "106027772", "106027773", "106027774", "106027775", "106027776", "106027777", "106027778"]:
-        result_list.append(fetchdata2(caseno))
+    for caseno in random.sample(caseno_1000, 10):
+        result_list.append(fetchdata3(caseno))
     base64Image_list = []
     metadata_list = []
     for r in result_list:

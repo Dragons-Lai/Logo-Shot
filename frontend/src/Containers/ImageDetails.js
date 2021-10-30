@@ -7,7 +7,7 @@ export default function ImageDetails({ route }) {
   return (
     <View>
       <View style={{ height: "40%", alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white }}>
-        <Image source={{ uri: route.params.uri }} style={{ borderColor: "black", borderWidth: 1, resizeMode: "cover", width: "75%", height: "90%" }} />
+        <Image source={{ uri: route.params.uri }} style={{ resizeMode: "cover", width: "75%", height: "90%" }} />
       </View>
       <View style={{ height: "60%", backgroundColor: COLORS.white }}>
         <Table style={{ backgroundColor: COLORS.white }} borderStyle={{ borderWidth: 1, borderColor: COLORS.black }}>
