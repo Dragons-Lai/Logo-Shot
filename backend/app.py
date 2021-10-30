@@ -6,6 +6,9 @@ import psycopg2
 from urllib.parse import quote
 import time
 import random
+import slimon
+model = slimon.Model()
+from Search import search
 app = Flask(__name__)
 
 conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -15,57 +18,57 @@ caseno_1000 = cur.fetchall()
 caseno_1000 = [x[0] for x in caseno_1000]
 conn.close()
 
-def fetchdata(ID):
-    conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
-    cur = conn.cursor()
-    cur.execute("SELECT doc,trademark_name,sdate,edate FROM trademark WHERE caseno = %s"%ID)
-    main = cur.fetchall()
-    cur.execute("SELECT bchinese FROM rca WHERE caseno = %s"%ID)
-    rca = cur.fetchall()
-    cur.execute("SELECT class FROM rcc WHERE caseno = %s"%ID)
-    rcc = cur.fetchall()
-    cur.execute("SELECT achinese,aenglish,address FROM rco WHERE caseno = %s"%ID)
-    rco = cur.fetchall()
-    cur.execute("SELECT filename FROM rcp WHERE caseno = %s"%ID)
-    rcp = cur.fetchall()
-    conn.close()
+# def fetchdata(ID):
+#     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
+#     cur = conn.cursor()
+#     cur.execute("SELECT doc,trademark_name,sdate,edate FROM trademark WHERE caseno = %s"%ID)
+#     main = cur.fetchall()
+#     cur.execute("SELECT bchinese FROM rca WHERE caseno = %s"%ID)
+#     rca = cur.fetchall()
+#     cur.execute("SELECT class FROM rcc WHERE caseno = %s"%ID)
+#     rcc = cur.fetchall()
+#     cur.execute("SELECT achinese,aenglish,address FROM rco WHERE caseno = %s"%ID)
+#     rco = cur.fetchall()
+#     cur.execute("SELECT filename FROM rcp WHERE caseno = %s"%ID)
+#     rcp = cur.fetchall()
+#     conn.close()
 
-    [doc,trademark_name,sdate,edate] = main[0]
-    [bchinese] = rca[0]
-    [class_] = rcc[0]
-    [achinese,aenglish,address] = rco[0]
-    [filename] = rcp[0]   
+#     [doc,trademark_name,sdate,edate] = main[0]
+#     [bchinese] = rca[0]
+#     [class_] = rcc[0]
+#     [achinese,aenglish,address] = rco[0]
+#     [filename] = rcp[0]   
 
-    # print("doc: ", doc, file=sys.stdout)
-    # print("filename: ", filename, file=sys.stdout)
-    Path = '/service/trademark/raw_register_data/' + doc + "/" + filename
-    # print("Path: ", Path, file=sys.stdout)
-    res = make_response(send_file(Path, mimetype="image/jpeg"))
-    res.headers['trademark_name'] = quote(trademark_name)
-    res.headers['sdate'] = sdate
-    res.headers['edate'] = edate
-    res.headers['bchinese'] = quote(bchinese)
-    res.headers['class_'] = class_
-    res.headers['achinese'] = quote(achinese)
-    res.headers['aenglish'] = aenglish
-    res.headers['address'] = quote(address)
+#     # print("doc: ", doc, file=sys.stdout)
+#     # print("filename: ", filename, file=sys.stdout)
+#     Path = '/service/trademark/raw_register_data/' + doc + "/" + filename
+#     # print("Path: ", Path, file=sys.stdout)
+#     res = make_response(send_file(Path, mimetype="image/jpeg"))
+#     res.headers['trademark_name'] = quote(trademark_name)
+#     res.headers['sdate'] = sdate
+#     res.headers['edate'] = edate
+#     res.headers['bchinese'] = quote(bchinese)
+#     res.headers['class_'] = class_
+#     res.headers['achinese'] = quote(achinese)
+#     res.headers['aenglish'] = aenglish
+#     res.headers['address'] = quote(address)
 
-    # os.chdir('/service/trademark/raw_register_data')
-    # img = mpimg.imread(Path)
-    # imgplot = plt.imshow(img)
-    # plt.show()
-    return res
+#     # os.chdir('/service/trademark/raw_register_data')
+#     # img = mpimg.imread(Path)
+#     # imgplot = plt.imshow(img)
+#     # plt.show()
+#     return res
 
-@app.route('/function1', methods=["GET"])
-def function1():
-    return jsonify({"Hello":"World"})
+# @app.route('/function1', methods=["GET"])
+# def function1():
+#     return jsonify({"Hello":"World"})
 
-@app.route('/function2', methods=["GET"])
-def function2():
-    # print(request.args["caseno"], file=sys.stdout)
-    res = fetchdata(request.args["caseno"])
-    return res
-    # return send_file("./rabbit.jpeg", mimetype="image/jpeg")
+# @app.route('/function2', methods=["GET"])
+# def function2():
+#     # print(request.args["caseno"], file=sys.stdout)
+#     res = fetchdata(request.args["caseno"])
+#     return res
+#     # return send_file("./rabbit.jpeg", mimetype="image/jpeg")
 @app.route('/function3', methods=['POST'])
 def function3():
     startTime = time.time()
@@ -84,43 +87,43 @@ import io
 from base64 import encodebytes
 from PIL import Image   
 
-def fetchdata2(ID):
-    conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
-    cur = conn.cursor()
-    cur.execute("SELECT doc,trademark_name,sdate,edate FROM trademark WHERE caseno = %s"%ID)
-    main = cur.fetchall()
-    cur.execute("SELECT bchinese FROM rca WHERE caseno = %s"%ID)
-    rca = cur.fetchall()
-    cur.execute("SELECT class FROM rcc WHERE caseno = %s"%ID)
-    rcc = cur.fetchall()
-    cur.execute("SELECT achinese,aenglish,address FROM rco WHERE caseno = %s"%ID)
-    rco = cur.fetchall()
-    cur.execute("SELECT filename FROM rcp WHERE caseno = %s"%ID)
-    rcp = cur.fetchall()
-    conn.close()
+# def fetchdata2(ID):
+#     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
+#     cur = conn.cursor()
+#     cur.execute("SELECT doc,trademark_name,sdate,edate FROM trademark WHERE caseno = %s"%ID)
+#     main = cur.fetchall()
+#     cur.execute("SELECT bchinese FROM rca WHERE caseno = %s"%ID)
+#     rca = cur.fetchall()
+#     cur.execute("SELECT class FROM rcc WHERE caseno = %s"%ID)
+#     rcc = cur.fetchall()
+#     cur.execute("SELECT achinese,aenglish,address FROM rco WHERE caseno = %s"%ID)
+#     rco = cur.fetchall()
+#     cur.execute("SELECT filename FROM rcp WHERE caseno = %s"%ID)
+#     rcp = cur.fetchall()
+#     conn.close()
 
-    [doc,trademark_name,sdate,edate] = main[0]
-    [bchinese] = rca[0]
-    [class_] = rcc[0]
-    [achinese,aenglish,address] = rco[0]
-    [filename] = rcp[0]   
+#     [doc,trademark_name,sdate,edate] = main[0]
+#     [bchinese] = rca[0]
+#     [class_] = rcc[0]
+#     [achinese,aenglish,address] = rco[0]
+#     [filename] = rcp[0]   
 
-    result = dict()
-    result["Path"] = '/service/trademark/raw_register_data/' + doc + "/" + filename
-    # print("Path: ", result["Path"], file=sys.stdout)
-    result["metadata"] = {
-        'caseno': ID, 
-        'trademark_name': trademark_name,
-        'sdate': sdate,
-        'edate': edate,
-        'bchinese': bchinese,
-        'class_': class_,
-        'achinese': achinese,
-        'aenglish': aenglish,
-        'address': address
-    }
-    # print("metadata: ", result["metadata"], file=sys.stdout) 
-    return result
+#     result = dict()
+#     result["Path"] = '/service/trademark/raw_register_data/' + doc + "/" + filename
+#     # print("Path: ", result["Path"], file=sys.stdout)
+#     result["metadata"] = {
+#         'caseno': ID, 
+#         'trademark_name': trademark_name,
+#         'sdate': sdate,
+#         'edate': edate,
+#         'bchinese': bchinese,
+#         'class_': class_,
+#         'achinese': achinese,
+#         'aenglish': aenglish,
+#         'address': address
+#     }
+#     # print("metadata: ", result["metadata"], file=sys.stdout) 
+#     return result
 
 
 # trademark
@@ -177,7 +180,11 @@ def fetchdata3(ID):
 def function4():
     startTime = time.time()
     result_list = []
-    for caseno in random.sample(caseno_1000, 10):
+    caseno_list = search("一蘭",10,[True,True,True])
+    # caseno_list = random.sample(caseno_1000, 10)
+    caseno_list = [105005116, 105064934, 105064461, 109045224, 100042498, 107081265, 107015025, 101053974, 107033226, 104056056]
+    caseno_list = model.single_img_retrieve("/home/dragons/flask/backend/1635595524630.png")[:20]
+    for caseno in caseno_list:
         result_list.append(fetchdata3(caseno))
     base64Image_list = []
     metadata_list = []
