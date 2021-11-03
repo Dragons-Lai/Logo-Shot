@@ -1,6 +1,7 @@
 global.Buffer = global.Buffer || require("buffer").Buffer;
 import axios from "./axios";
 import * as FileSystem from "expo-file-system";
+import { images, icons, COLORS, FONTS, SIZES } from "../constant/";
 
 // export async function GET_TEXT() {
 //   axios
@@ -92,5 +93,52 @@ export async function GET_IMAGE2() {
       }
       // console.log(photos.metadatas);
       return photos;
+    });
+}
+
+export async function Searching(ImageURL, searchQuery) {
+  const data = new FormData();
+  data.append("name", Date.now());
+
+  if (ImageURL !== images.cat) {
+    const base64 = await FileSystem.readAsStringAsync(ImageURL.uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    data.append("file_attachment", base64);
+  } else {
+    data.append("file_attachment", null);
+  }
+  data.append("searchQuery", searchQuery);
+
+  return await axios
+    .post("/function5", data, {
+      headers: { "Content-Type": "multipart/form-data; " },
+      responseType: "json",
+    })
+    .then((res) => {
+      const metadatas = res.data.metadatas;
+      const base64Images = res.data.base64Images.map((base64Image) => `data:image/jpeg;base64,${base64Image}`);
+      let photos = {
+        metadatas: [],
+        base64Images: [],
+      };
+      var steps = metadatas.length / 2;
+      for (var i = 0; i < steps; i++) {
+        photos.metadatas.push([metadatas[2 * i], metadatas[2 * i + 1]]);
+        photos.base64Images.push([base64Images[2 * i], base64Images[2 * i + 1]]);
+      }
+      // console.log(photos.metadatas);
+      return photos;
+    });
+}
+
+export async function GET_IMAGE3() {
+  return await axios
+    .get("/function6", {
+      responseType: "json",
+    })
+    .then((res) => {
+      const base64Images = res.data.base64Images.map((base64Image) => `data:image/jpeg;base64,${base64Image}`);
+      return base64Images;
     });
 }

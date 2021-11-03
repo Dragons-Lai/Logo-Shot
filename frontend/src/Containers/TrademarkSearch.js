@@ -4,7 +4,7 @@ import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 import { Searchbar } from "react-native-paper";
 import { ThemeProvider, CheckBox, Button, BottomSheet, ListItem } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
-import { SEND_IMAGE, GET_IMAGE2 } from "../api";
+import { SEND_IMAGE, GET_IMAGE2, Searching } from "../api";
 
 const theme = {
   CheckBox: {
@@ -22,7 +22,7 @@ const pickImage = async () => {
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
     aspect: [4, 3],
-    quality: 1,
+    quality: 0.5,
   });
 
   // console.log(result);
@@ -38,7 +38,7 @@ const cameraImage = async () => {
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
     aspect: [4, 3],
-    quality: 1,
+    quality: 0.5,
   });
 
   // console.log(result);
@@ -130,8 +130,9 @@ export default function TrademarkSearch({ navigation }) {
               style={{ alignItems: "center", justifyContent: "center" }}
               disabled={(images.cat !== ImageURL) | (searchQuery !== "") ? false : true}
               onPress={async () => {
-                await SEND_IMAGE(ImageURL);
-                var photos = await GET_IMAGE2();
+                // await SEND_IMAGE(ImageURL);
+                // var photos = await GET_IMAGE2();
+                var photos = await Searching(ImageURL, searchQuery);
                 navigation.push("SearchResults", { photos: photos });
               }}
               title="送出"

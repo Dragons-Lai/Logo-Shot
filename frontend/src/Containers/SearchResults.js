@@ -5,7 +5,7 @@ export default function SearchResults({ route, navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <Text style={{ fontWeight: "bold", fontSize: 18, marginVertical: 10, marginLeft: 15 }}>10 result(s) found.</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 18, marginVertical: 10, marginLeft: 15 }}>{route.params.photos.base64Images.length * 2} result(s) found.</Text>
         <View style={styles.searchResults}>
           {route.params.photos.base64Images.map((values, idx) => (
             <View style={idx === 0 ? styles.searchResultsRow : { ...styles.searchResultsRow, borderTopWidth: 1 }} key={idx}>

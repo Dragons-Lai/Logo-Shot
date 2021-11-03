@@ -6,9 +6,6 @@ import psycopg2
 from urllib.parse import quote
 import time
 import random
-import slimon
-model = slimon.Model()
-from Search import search
 app = Flask(__name__)
 
 conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -180,10 +177,10 @@ def fetchdata3(ID):
 def function4():
     startTime = time.time()
     result_list = []
-    caseno_list = search("一蘭",10,[True,True,True])
+    # caseno_list = search("一蘭",10,[True,True,True])
     # caseno_list = random.sample(caseno_1000, 10)
     caseno_list = [105005116, 105064934, 105064461, 109045224, 100042498, 107081265, 107015025, 101053974, 107033226, 104056056]
-    caseno_list = model.single_img_retrieve("/home/dragons/flask/backend/1635595524630.png")[:20]
+    # caseno_list = model.single_img_retrieve("/home/dragons/flask/backend/1635595524630.png")[:20]
     for caseno in caseno_list:
         result_list.append(fetchdata3(caseno))
     base64Image_list = []
@@ -202,5 +199,72 @@ def function4():
         'metadatas': metadata_list
     })
 
+import slimon
+model = slimon.Model()
+from Search import search
+
+@app.route('/function5', methods=['POST'])
+def function5():
+    startTime = time.time()
+    # print(request.method, file=sys.stdout)   
+    photo = request.form["file_attachment"]
+    # print(type(photo), file=sys.stdout) # <class 'str'>
+    searchQuery = request.form["searchQuery"] 
+    if photo != "null":
+        # print(request.form['name'], file=sys.stdout)   
+        filePath = "/home/dragons/flask/backend/{}.png".format(request.form['name'])
+        print("filePath:", filePath, file=sys.stdout) 
+        with open(filePath, "wb") as f:
+            img = base64.decodebytes(photo.encode('ascii'))
+            f.write(img)
+        startTime2 = time.time()
+        caseno_list = model.single_img_retrieve(filePath)[:20]
+        EndTime2 = time.time()
+        print("Time Spent(model): {}s".format(EndTime2 - startTime2), file=sys.stdout) 
+    elif searchQuery != "":
+        print("searchQuery:", searchQuery, file=sys.stdout) 
+        caseno_list = search(searchQuery,10,[True,True,True])
+    result_list = []
+    # caseno_list = random.sample(caseno_1000, 10)
+    # caseno_list = [105005116, 105064934, 105064461, 109045224, 100042498, 107081265, 107015025, 101053974, 107033226, 104056056]
+    for caseno in caseno_list:
+        result_list.append(fetchdata3(caseno))
+    base64Image_list = []
+    metadata_list = []
+    for r in result_list:
+        try: 
+            pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
+            byte_arr = io.BytesIO()
+            pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+            encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
+            base64Image_list.append(encoded_img)
+            metadata_list.append(r["metadata"])
+        except:
+            pass
+    EndTime = time.time()
+    print("Time Spent(function5): {}s".format(EndTime - startTime), file=sys.stdout)           
+    return jsonify({
+        'base64Images': base64Image_list,
+        'metadatas': metadata_list
+    })
+
+from pick_gan_pic import pick_pic
+@app.route('/function6', methods=['GET'])
+def function6():
+    startTime = time.time()
+    path_list = pick_pic(-1)[:50]
+    # print("path_list:", path_list, file=sys.stdout) 
+    base64Image_list = []
+    for path in path_list:
+        pil_img = Image.open(path, mode='r') # reads the PIL image
+        byte_arr = io.BytesIO()
+        pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+        encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
+        base64Image_list.append(encoded_img)         
+    EndTime = time.time()
+    print("Time Spent(function6): {}s".format(EndTime - startTime), file=sys.stdout)                
+    return jsonify({
+        'base64Images': base64Image_list,
+    })
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8081, debug=True)

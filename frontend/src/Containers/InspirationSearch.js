@@ -3,8 +3,9 @@ import { View, Text, Image, ImageStore } from "react-native";
 import { Chip, ThemeProvider, Button } from "react-native-elements";
 import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 
-export default function InspirationSearch() {
-  const imageList = [images.random1, images.random2, images.random4, images.random5, images.random6, images.random7, images.random8, images.random9];
+export default function InspirationSearch({ route, navigation }) {
+  const imageList = route.params.base64Images;
+  // const imageList = [images.random1, images.random2, images.random4, images.random5, images.random6, images.random7, images.random8, images.random9];
   const [checked1, setChecked1] = React.useState("outline");
   const [checked2, setChecked2] = React.useState("outline");
   const [checked3, setChecked3] = React.useState("outline");
@@ -30,7 +31,10 @@ export default function InspirationSearch() {
         <Chip buttonStyle={{ width: 100 }} title="Animals" type={checked3} onPress={() => setChecked3(checked3 === "outline" ? "solid" : "outline")} />
       </View>
       <View style={{ height: "35%", alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white }}>
-        <Image source={target === -1 ? imageList[count] : imageList[target]} style={{ resizeMode: "contain", width: "70%", height: "70%", borderColor: "black", borderWidth: 1 }}></Image>
+        <Image
+          source={target === -1 ? { uri: imageList[count] } : { uri: imageList[target] }}
+          style={{ resizeMode: "contain", width: "70%", height: "70%", borderColor: "black", borderWidth: 1 }}
+        ></Image>
         <Text>The {target === -1 ? count : target}th image</Text>
       </View>
       <View style={{ height: "5%", backgroundColor: COLORS.white }}>

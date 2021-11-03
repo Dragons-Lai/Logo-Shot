@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
 import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 import { useFonts } from "expo-font";
+import { GET_IMAGE3 } from "../api";
 
 export default function HomePage3({ navigation }) {
   const [loaded] = useFonts({
@@ -38,8 +39,9 @@ export default function HomePage3({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity
           style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white, borderRadius: 100, marginHorizontal: SIZES.base * 2 }}
-          onPress={() => {
-            navigation.push("InspirationSearch");
+          onPress={async () => {
+            var base64Images = await GET_IMAGE3();
+            navigation.push("InspirationSearch", { base64Images: base64Images });
           }}
         >
           <Text>找靈感</Text>
