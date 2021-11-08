@@ -96,11 +96,10 @@ export async function GET_IMAGE2() {
     });
 }
 
-export async function Searching(ImageURL, searchQuery) {
+export async function Searching(ImageURL, searchQuery, checkList) {
   const data = new FormData();
   data.append("name", Date.now());
-
-  if (ImageURL !== images.cat) {
+  if (ImageURL !== images.uploading2) {
     const base64 = await FileSystem.readAsStringAsync(ImageURL.uri, {
       encoding: FileSystem.EncodingType.Base64,
     });
@@ -109,6 +108,10 @@ export async function Searching(ImageURL, searchQuery) {
     data.append("file_attachment", null);
   }
   data.append("searchQuery", searchQuery);
+  data.append("check1", checkList[0] ? "true" : "false");
+  data.append("check2", checkList[1] ? "true" : "false");
+  data.append("check3", checkList[2] ? "true" : "false");
+  data.append("check4", checkList[3] ? "true" : "false");
 
   return await axios
     .post("/function5", data, {
@@ -122,7 +125,7 @@ export async function Searching(ImageURL, searchQuery) {
         metadatas: [],
         base64Images: [],
       };
-      var steps = metadatas.length / 2;
+      var steps = parseInt(metadatas.length / 2);
       for (var i = 0; i < steps; i++) {
         photos.metadatas.push([metadatas[2 * i], metadatas[2 * i + 1]]);
         photos.base64Images.push([base64Images[2 * i], base64Images[2 * i + 1]]);

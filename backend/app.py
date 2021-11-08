@@ -199,9 +199,9 @@ def function4():
         'metadatas': metadata_list
     })
 
-import slimon
-model = slimon.Model()
-from Search import search
+# import slimon
+# model = slimon.Model()
+# from Search import search
 
 @app.route('/function5', methods=['POST'])
 def function5():
@@ -210,6 +210,10 @@ def function5():
     photo = request.form["file_attachment"]
     # print(type(photo), file=sys.stdout) # <class 'str'>
     searchQuery = request.form["searchQuery"] 
+    check1 = True if request.form["check1"] == "true" else False
+    check2 = True if request.form["check2"] == "true" else False
+    check3 = True if request.form["check3"] == "true" else False
+    check4 = True if request.form["check4"] == "true" else False
     if photo != "null":
         # print(request.form['name'], file=sys.stdout)   
         filePath = "/home/dragons/flask/backend/{}.png".format(request.form['name'])
@@ -218,15 +222,19 @@ def function5():
             img = base64.decodebytes(photo.encode('ascii'))
             f.write(img)
         startTime2 = time.time()
-        caseno_list = model.single_img_retrieve(filePath)[:20]
+        # caseno_list = model.single_img_retrieve(filePath)[:20]
         EndTime2 = time.time()
         print("Time Spent(model): {}s".format(EndTime2 - startTime2), file=sys.stdout) 
     elif searchQuery != "":
         print("searchQuery:", searchQuery, file=sys.stdout) 
-        caseno_list = search(searchQuery,10,[True,True,True])
+        # print("check1:", check1, file=sys.stdout) 
+        # print("check2:", check2, file=sys.stdout) 
+        # print("check3:", check3, file=sys.stdout) 
+        # print("check4:", check4, file=sys.stdout) 
+        # caseno_list = search(searchQuery,10,[check1,check2,check3])
     result_list = []
-    # caseno_list = random.sample(caseno_1000, 10)
-    # caseno_list = [105005116, 105064934, 105064461, 109045224, 100042498, 107081265, 107015025, 101053974, 107033226, 104056056]
+    caseno_list = random.sample(caseno_1000, 10)
+    # caseno_list = [99018887, 100048442, 100006294, 100036013, 100015475, 100045485, 100053242, 100053158, 98017486, 100048244, 100034136, 100015575, 99059834, 100039852, 100020857, 100039089, 100015683, 100030430, 99059734, 100050261, 100041025, 100034969, 100058002, 100035279, 100047596, 100048242, 100047022, 100033212, 100047019, 100048739, 99056287, 99042253, 99022071, 100018260, 100043720, 100035291, 99061105, 99055598, 100055899, 100022190, 100037752, 100032097, 98030087, 100041404, 100034168, 100012916, 99040055, 100047249, 100037818, 100046101, 100000214, 100039351, 100043045, 100046931, 100040241, 100010120, 99057907, 100036572, 100035000, 100027168, 100037388, 99042111, 100028773, 100032160, 100018054, 100001572, 99038458, 100040028, 100008473, 99054248, 100040320, 100034946, 100029091, 100038959, 99035163, 100027546, 99041348, 100021585, 99059678, 97049456, 100053398, 100022946, 100040031, 100028393, 100039333, 100010723, 100034580, 100046150, 100041676, 100030440, 99057980, 100036995, 100045130, 100025812, 100036394, 100015200, 100044424, 100021701, 100040164, 100040873]
     for caseno in caseno_list:
         result_list.append(fetchdata3(caseno))
     base64Image_list = []
@@ -243,6 +251,7 @@ def function5():
             pass
     EndTime = time.time()
     print("Time Spent(function5): {}s".format(EndTime - startTime), file=sys.stdout)           
+    # print(len(base64Image_list), file=sys.stdout)        
     return jsonify({
         'base64Images': base64Image_list,
         'metadatas': metadata_list

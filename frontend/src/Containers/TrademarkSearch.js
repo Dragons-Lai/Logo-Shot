@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Text, Image } from "react-native";
 import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
-import { Searchbar } from "react-native-paper";
-import { ThemeProvider, CheckBox, Button, BottomSheet, ListItem } from "react-native-elements";
+import { ThemeProvider, CheckBox, Button, BottomSheet, ListItem, SearchBar } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import { SEND_IMAGE, GET_IMAGE2, Searching } from "../api";
 
@@ -10,7 +9,7 @@ const theme = {
   CheckBox: {
     checkedColor: "black",
     uncheckedColor: "black",
-    containerStyle: { width: "45%" },
+    containerStyle: { width: "45%", backgroundColor: "white" },
     size: 25,
     textStyle: {},
     titleProps: {},
@@ -57,9 +56,10 @@ export default function TrademarkSearch({ navigation }) {
   const [checked3, setChecked3] = React.useState(true);
   const [checked4, setChecked4] = React.useState(true);
 
-  const [ImageURL, setImageURL] = useState(images.cat);
+  const [ImageURL, setImageURL] = useState(images.uploading2);
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const list = [
     {
       title: "Take a photo",
@@ -88,21 +88,28 @@ export default function TrademarkSearch({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <View style={styles.container}>
-        <View style={{ height: "25%", backgroundColor: "white" }}>
+        <View style={{ height: "35%", backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Text & Searchbar */}
           <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding / 6 }}>Trademark Text(s)</Text>
-          <Searchbar placeholder="Search" onChangeText={(query) => setSearchQuery(query)} value={searchQuery} placeholder="Enter any text in your trademark" />
+          <SearchBar
+            inputContainerStyle={{ backgroundColor: COLORS.white }}
+            containerStyle={{ marginVertical: 7, backgroundColor: COLORS.white }}
+            disabled={isLoading}
+            onChangeText={(query) => setSearchQuery(query)}
+            value={searchQuery}
+            placeholder="Enter any text in your trademark"
+          />
           {/* CheckBox */}
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <CheckBox checked={checked1} checkedTitle="人名" onIconPress={() => setChecked1(!checked1)} onPress={() => setChecked1(!checked1)} title="人名" />
-            <CheckBox checked={checked2} checkedTitle="公司" onIconPress={() => setChecked2(!checked2)} onPress={() => setChecked2(!checked2)} title="公司" />
+            <CheckBox checked={checked1} checkedTitle="商標名、商標上文字" onIconPress={() => setChecked1(!checked1)} onPress={() => setChecked1(!checked1)} title="商標名、商標上文字" />
+            <CheckBox checked={checked2} checkedTitle="人名/公司名/地址..." onIconPress={() => setChecked2(!checked2)} onPress={() => setChecked2(!checked2)} title="人名/公司名/地址..." />
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <CheckBox checked={checked3} checkedTitle="商標" onIconPress={() => setChecked3(!checked3)} onPress={() => setChecked3(!checked3)} title="商標" />
-            <CheckBox checked={checked4} checkedTitle="商品" onIconPress={() => setChecked4(!checked4)} onPress={() => setChecked4(!checked4)} title="商品" />
+            <CheckBox checked={checked3} checkedTitle="商品描述" onIconPress={() => setChecked3(!checked3)} onPress={() => setChecked3(!checked3)} title="商品描述" />
+            <CheckBox checked={checked4} checkedTitle="其他" onIconPress={() => setChecked4(!checked4)} onPress={() => setChecked4(!checked4)} title="其他" />
           </View>
         </View>
-        <View style={{ height: "15%", backgroundColor: COLORS.white }}>
+        <View style={{ backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Text & Button */}
           <Text style={{ ...FONTS.h3 }}>Search by Image</Text>
           <Text style={{ ...FONTS.h4 }}>jpg, jpeg, png, tiff & bmp</Text>
@@ -111,33 +118,34 @@ export default function TrademarkSearch({ navigation }) {
             containerStyle={{ margin: 5 }}
             loadingProps={{ animating: true }}
             loadingStyle={{}}
+            disabled={isLoading}
             onPress={() => setIsVisible(true)}
             title="Upload Image"
             titleProps={{}}
             titleStyle={{ marginHorizontal: 5 }}
           />
         </View>
-        <View style={{ height: "35%", backgroundColor: COLORS.white }}>
+        <View style={{ height: "30%", backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Image */}
           <Image source={ImageURL} style={{ resizeMode: "contain", width: "100%", height: "100%" }} />
         </View>
-        <View style={{ height: "15%", backgroundColor: COLORS.white }}></View>
-        <View style={{ height: "10%", backgroundColor: COLORS.blue }}>
-          <View style={{ flex: 1 }}>
-            {/* Button */}
-            <Button
-              buttonStyle={{ width: "100%" }}
-              style={{ alignItems: "center", justifyContent: "center" }}
-              disabled={(images.cat !== ImageURL) | (searchQuery !== "") ? false : true}
-              onPress={async () => {
-                // await SEND_IMAGE(ImageURL);
-                // var photos = await GET_IMAGE2();
-                var photos = await Searching(ImageURL, searchQuery);
-                navigation.push("SearchResults", { photos: photos });
-              }}
-              title="送出"
-            ></Button>
-          </View>
+        <View style={{ flex: 1, backgroundColor: COLORS.white, justifyContent: "flex-end" }}>
+          {/* Button */}
+          <Button
+            buttonStyle={{ width: "100%", height: 45 }}
+            containerStyle={{}}
+            loading={isLoading}
+            disabled={((images.uploading2 !== ImageURL) | (searchQuery !== "")) & (isLoading !== true) ? false : true}
+            onPress={async () => {
+              // await SEND_IMAGE(ImageURL);
+              // var photos = await GET_IMAGE2();
+              setIsLoading(true);
+              var photos = await Searching(ImageURL, searchQuery, [checked1, checked2, checked3, checked4]);
+              navigation.push("SearchResults", { photos: photos });
+              setIsLoading(false);
+            }}
+            title="送出"
+          ></Button>
         </View>
         <BottomSheet isVisible={isVisible} containerStyle={{ backgroundColor: "rgba(0.5, 0.25, 0, 0.2)" }}>
           {list.map((l, i) => (
@@ -156,5 +164,6 @@ export default function TrademarkSearch({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.white,
   },
 });
