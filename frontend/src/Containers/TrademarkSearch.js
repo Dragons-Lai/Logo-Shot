@@ -88,6 +88,26 @@ export default function TrademarkSearch({ navigation }) {
   return (
     <ThemeProvider theme={theme}>
       <View style={styles.container}>
+        <View style={{ backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
+          {/* Text & Button */}
+          <Text style={{ ...FONTS.h3 }}>Search by Image</Text>
+          <Text style={{ ...FONTS.h4 }}>jpg, jpeg, png, tiff & bmp</Text>
+          <Button
+            buttonStyle={{ width: 150 }}
+            containerStyle={{ margin: 5 }}
+            loadingProps={{ animating: true }}
+            loadingStyle={{}}
+            disabled={isLoading}
+            onPress={() => setIsVisible(true)}
+            title="Upload Image"
+            titleProps={{}}
+            titleStyle={{ marginHorizontal: 5 }}
+          />
+        </View>
+        <View style={{ height: "30%", backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
+          {/* Image */}
+          <Image source={ImageURL} style={{ resizeMode: "contain", width: "100%", height: "100%" }} />
+        </View>
         <View style={{ height: "35%", backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Text & Searchbar */}
           <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding / 6 }}>Trademark Text(s)</Text>
@@ -108,26 +128,6 @@ export default function TrademarkSearch({ navigation }) {
             <CheckBox checked={checked3} checkedTitle="商品描述" onIconPress={() => setChecked3(!checked3)} onPress={() => setChecked3(!checked3)} title="商品描述" />
             <CheckBox checked={checked4} checkedTitle="其他" onIconPress={() => setChecked4(!checked4)} onPress={() => setChecked4(!checked4)} title="其他" />
           </View>
-        </View>
-        <View style={{ backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
-          {/* Text & Button */}
-          <Text style={{ ...FONTS.h3 }}>Search by Image</Text>
-          <Text style={{ ...FONTS.h4 }}>jpg, jpeg, png, tiff & bmp</Text>
-          <Button
-            buttonStyle={{ width: 150 }}
-            containerStyle={{ margin: 5 }}
-            loadingProps={{ animating: true }}
-            loadingStyle={{}}
-            disabled={isLoading}
-            onPress={() => setIsVisible(true)}
-            title="Upload Image"
-            titleProps={{}}
-            titleStyle={{ marginHorizontal: 5 }}
-          />
-        </View>
-        <View style={{ height: "30%", backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
-          {/* Image */}
-          <Image source={ImageURL} style={{ resizeMode: "contain", width: "100%", height: "100%" }} />
         </View>
         <View style={{ flex: 1, backgroundColor: COLORS.white, justifyContent: "flex-end" }}>
           {/* Button */}
