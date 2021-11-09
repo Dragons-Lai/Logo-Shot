@@ -6,6 +6,7 @@ import psycopg2
 from urllib.parse import quote
 import time
 import random
+import os
 app = Flask(__name__)
 
 conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -203,6 +204,27 @@ def function4():
 # model = slimon.Model()
 # from Search import search
 
+def load_images(caseno_list):
+    result_list = []
+    # caseno_list = [99018887, 100048442, 100006294, 100036013, 100015475, 100045485, 100053242, 100053158, 98017486, 100048244, 100034136, 100015575, 99059834, 100039852, 100020857, 100039089, 100015683, 100030430, 99059734, 100050261, 100041025, 100034969, 100058002, 100035279, 100047596, 100048242, 100047022, 100033212, 100047019, 100048739, 99056287, 99042253, 99022071, 100018260, 100043720, 100035291, 99061105, 99055598, 100055899, 100022190, 100037752, 100032097, 98030087, 100041404, 100034168, 100012916, 99040055, 100047249, 100037818, 100046101, 100000214, 100039351, 100043045, 100046931, 100040241, 100010120, 99057907, 100036572, 100035000, 100027168, 100037388, 99042111, 100028773, 100032160, 100018054, 100001572, 99038458, 100040028, 100008473, 99054248, 100040320, 100034946, 100029091, 100038959, 99035163, 100027546, 99041348, 100021585, 99059678, 97049456, 100053398, 100022946, 100040031, 100028393, 100039333, 100010723, 100034580, 100046150, 100041676, 100030440, 99057980, 100036995, 100045130, 100025812, 100036394, 100015200, 100044424, 100021701, 100040164, 100040873]
+    for caseno in caseno_list:
+        result_list.append(fetchdata3(caseno))       
+    base64Image_list = []
+    metadata_list = []
+    for r in result_list:
+        try:
+            # print('r["Path"]: ', r["Path"], file=sys.stdout)   
+            pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
+            # print(os.path.getsize(r["Path"]))
+            byte_arr = io.BytesIO()
+            pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+            encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
+            base64Image_list.append(encoded_img)
+            metadata_list.append(r["metadata"])
+        except:
+            pass
+    return base64Image_list, metadata_list
+
 @app.route('/function5', methods=['POST'])
 def function5():
     startTime = time.time()
@@ -210,10 +232,7 @@ def function5():
     photo = request.form["file_attachment"]
     # print(type(photo), file=sys.stdout) # <class 'str'>
     searchQuery = request.form["searchQuery"] 
-    check1 = True if request.form["check1"] == "true" else False
-    check2 = True if request.form["check2"] == "true" else False
-    check3 = True if request.form["check3"] == "true" else False
-    check4 = True if request.form["check4"] == "true" else False
+    caseno_list1 = []
     if photo != "null":
         # print(request.form['name'], file=sys.stdout)   
         filePath = "/home/dragons/flask/backend/{}.png".format(request.form['name'])
@@ -222,39 +241,39 @@ def function5():
             img = base64.decodebytes(photo.encode('ascii'))
             f.write(img)
         startTime2 = time.time()
-        # caseno_list = model.single_img_retrieve(filePath)[:20]
+        caseno_list1 = random.sample(caseno_1000, 10)
+        # caseno_list1 = model.single_img_retrieve(filePath)[:20]
         EndTime2 = time.time()
-        print("Time Spent(model): {}s".format(EndTime2 - startTime2), file=sys.stdout) 
-    elif searchQuery != "":
+        print("Time Spent(Image_Model): {}s".format(EndTime2 - startTime2), file=sys.stdout)
+    caseno_list2 = []    
+    if searchQuery != "":
         print("searchQuery:", searchQuery, file=sys.stdout) 
+        check1 = True if request.form["check1"] == "true" else False
+        check2 = True if request.form["check2"] == "true" else False
+        check3 = True if request.form["check3"] == "true" else False
+        check4 = True if request.form["check4"] == "true" else False        
         # print("check1:", check1, file=sys.stdout) 
         # print("check2:", check2, file=sys.stdout) 
         # print("check3:", check3, file=sys.stdout) 
         # print("check4:", check4, file=sys.stdout) 
-        # caseno_list = search(searchQuery,10,[check1,check2,check3])
-    result_list = []
-    caseno_list = random.sample(caseno_1000, 10)
-    # caseno_list = [99018887, 100048442, 100006294, 100036013, 100015475, 100045485, 100053242, 100053158, 98017486, 100048244, 100034136, 100015575, 99059834, 100039852, 100020857, 100039089, 100015683, 100030430, 99059734, 100050261, 100041025, 100034969, 100058002, 100035279, 100047596, 100048242, 100047022, 100033212, 100047019, 100048739, 99056287, 99042253, 99022071, 100018260, 100043720, 100035291, 99061105, 99055598, 100055899, 100022190, 100037752, 100032097, 98030087, 100041404, 100034168, 100012916, 99040055, 100047249, 100037818, 100046101, 100000214, 100039351, 100043045, 100046931, 100040241, 100010120, 99057907, 100036572, 100035000, 100027168, 100037388, 99042111, 100028773, 100032160, 100018054, 100001572, 99038458, 100040028, 100008473, 99054248, 100040320, 100034946, 100029091, 100038959, 99035163, 100027546, 99041348, 100021585, 99059678, 97049456, 100053398, 100022946, 100040031, 100028393, 100039333, 100010723, 100034580, 100046150, 100041676, 100030440, 99057980, 100036995, 100045130, 100025812, 100036394, 100015200, 100044424, 100021701, 100040164, 100040873]
-    for caseno in caseno_list:
-        result_list.append(fetchdata3(caseno))
-    base64Image_list = []
-    metadata_list = []
-    for r in result_list:
-        try: 
-            pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
-            byte_arr = io.BytesIO()
-            pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
-            encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
-            base64Image_list.append(encoded_img)
-            metadata_list.append(r["metadata"])
-        except:
-            pass
+        startTime3 = time.time()
+        caseno_list2 = random.sample(caseno_1000, 10)
+        # caseno_list2 = search(searchQuery,10,[check1,check2,check3])
+        EndTime3 = time.time()
+        print("Time Spent(Text_Model): {}s".format(EndTime3 - startTime3), file=sys.stdout)        
+    startTime4 = time.time()    
+    base64Image_list1, metadata_list1 = load_images(caseno_list1)  
+    base64Image_list2, metadata_list2 = load_images(caseno_list2) 
+    EndTime4 = time.time()
+    print("Time Spent(load_images): {}s".format(EndTime4 - startTime4), file=sys.stdout)
     EndTime = time.time()
     print("Time Spent(function5): {}s".format(EndTime - startTime), file=sys.stdout)           
     # print(len(base64Image_list), file=sys.stdout)        
     return jsonify({
-        'base64Images': base64Image_list,
-        'metadatas': metadata_list
+        'base64Images1': base64Image_list1,
+        'metadatas1': metadata_list1,
+        'base64Images2': base64Image_list2,
+        'metadatas2': metadata_list2        
     })
 
 from pick_gan_pic import pick_pic
@@ -265,7 +284,10 @@ def function6():
     # print("path_list:", path_list, file=sys.stdout) 
     base64Image_list = []
     for path in path_list:
+        # print('path: ', path, file=sys.stdout)          
         pil_img = Image.open(path, mode='r') # reads the PIL image
+        print(os.path.getsize(path)) 
+        pil_img = pil_img.resize((128, 128))
         byte_arr = io.BytesIO()
         pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
         encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        

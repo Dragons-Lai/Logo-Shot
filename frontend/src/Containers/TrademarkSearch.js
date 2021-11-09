@@ -140,8 +140,11 @@ export default function TrademarkSearch({ navigation }) {
               // await SEND_IMAGE(ImageURL);
               // var photos = await GET_IMAGE2();
               setIsLoading(true);
-              var photos = await Searching(ImageURL, searchQuery, [checked1, checked2, checked3, checked4]);
-              navigation.push("SearchResults", { photos: photos });
+              let startTime = new Date();
+              var returns = await Searching(ImageURL, searchQuery, [checked1, checked2, checked3, checked4]);
+              let endTime = new Date();
+              console.log((endTime - startTime) / 1000 + " seconds");
+              navigation.push("SearchResults", { returns: returns });
               setIsLoading(false);
             }}
             title="送出"
