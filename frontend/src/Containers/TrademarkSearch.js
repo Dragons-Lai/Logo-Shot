@@ -90,10 +90,10 @@ export default function TrademarkSearch({ navigation }) {
       <View style={styles.container}>
         <View style={{ backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Text & Button */}
-          <Text style={{ ...FONTS.h3 }}>Search by Image</Text>
+          <Text style={{ ...FONTS.h2 }}>Search by Image</Text>
           <Text style={{ ...FONTS.h4 }}>jpg, jpeg, png, tiff & bmp</Text>
           <Button
-            buttonStyle={{ width: 150 }}
+            buttonStyle={{ width: "45%" }}
             containerStyle={{ margin: 5 }}
             loadingProps={{ animating: true }}
             loadingStyle={{}}
@@ -110,7 +110,7 @@ export default function TrademarkSearch({ navigation }) {
         </View>
         <View style={{ height: "35%", backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Text & Searchbar */}
-          <Text style={{ ...FONTS.h3, marginBottom: SIZES.padding / 6 }}>Trademark Text(s)</Text>
+          <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding / 6 }}>Trademark Text(s)</Text>
           <SearchBar
             inputContainerStyle={{ backgroundColor: COLORS.white }}
             containerStyle={{ marginVertical: 7, backgroundColor: COLORS.white }}

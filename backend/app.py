@@ -258,7 +258,7 @@ def function5():
         # print("check4:", check4, file=sys.stdout) 
         startTime3 = time.time()
         caseno_list2 = random.sample(caseno_1000, 10)
-        # caseno_list2 = search(searchQuery,10,[check1,check2,check3])
+        # caseno_list2 = search(searchQuery,10,[check1,check2,check3], 10)
         EndTime3 = time.time()
         print("Time Spent(Text_Model): {}s".format(EndTime3 - startTime3), file=sys.stdout)        
     startTime4 = time.time()    
@@ -279,14 +279,16 @@ def function5():
 from pick_gan_pic import pick_pic
 @app.route('/function6', methods=['GET'])
 def function6():
+    label = request.args["label"]
+    # print("label: ", label, file=sys.stdout) 
     startTime = time.time()
-    path_list = pick_pic(-1)[:50]
+    path_list = pick_pic(label)[:50]
     # print("path_list:", path_list, file=sys.stdout) 
     base64Image_list = []
     for path in path_list:
         # print('path: ', path, file=sys.stdout)          
         pil_img = Image.open(path, mode='r') # reads the PIL image
-        print(os.path.getsize(path)) 
+        # print(os.path.getsize(path)) 
         pil_img = pil_img.resize((128, 128))
         byte_arr = io.BytesIO()
         pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
@@ -298,4 +300,5 @@ def function6():
         'base64Images': base64Image_list,
     })
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8081, debug=True)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=8081)

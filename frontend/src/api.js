@@ -111,6 +111,7 @@ function ImagePreprocessing(metadatas, base64Images) {
 
 export async function Searching(ImageURL, searchQuery, checkList) {
   const data = new FormData();
+  var initial = "Image Search";
   data.append("name", Date.now());
   if (ImageURL !== images.uploading2) {
     const base64 = await FileSystem.readAsStringAsync(ImageURL.uri, {
@@ -119,6 +120,7 @@ export async function Searching(ImageURL, searchQuery, checkList) {
     data.append("file_attachment", base64);
   } else {
     data.append("file_attachment", null);
+    initial = "Text Search";
   }
   data.append("searchQuery", searchQuery);
   data.append("check1", checkList[0] ? "true" : "false");
@@ -140,14 +142,17 @@ export async function Searching(ImageURL, searchQuery, checkList) {
       let photos2 = ImagePreprocessing(metadatas2, base64Images2);
       // console.log(photos1.metadatas);
       // console.log(photos2.metadatas);
-      return { photos1: photos1, photos2: photos2 };
+      return { photos1: photos1, photos2: photos2, initial: initial };
     });
 }
 
-export async function GET_IMAGE3() {
+export async function GET_IMAGE3(label) {
   return await axios
     .get("/function6", {
       responseType: "json",
+      params: {
+        label: label,
+      },
     })
     .then((res) => {
       const base64Images = res.data.base64Images.map((base64Image) => `data:image/jpeg;base64,${base64Image}`);

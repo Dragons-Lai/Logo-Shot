@@ -42,7 +42,7 @@ export default function HomePage3({ navigation }) {
           onPress={async () => {
             setIsLoading(true);
             let startTime = new Date();
-            var base64Images = await GET_IMAGE3();
+            var base64Images = await GET_IMAGE3(0);
             let endTime = new Date();
             console.log((endTime - startTime) / 1000 + " seconds");
             navigation.push("InspirationSearch", { base64Images: base64Images });

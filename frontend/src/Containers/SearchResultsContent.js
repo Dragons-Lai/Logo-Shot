@@ -1,7 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView, ScrollView, StatusBar } from "react-native";
+import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 
-export default function SearchResultsContent({ photos, navigation }) {
+export default function SearchResultsContent({ photos, navigation, type }) {
   return (
     <>
       {photos.base64Images.length !== 0 ? (
@@ -39,7 +40,12 @@ export default function SearchResultsContent({ photos, navigation }) {
           </ScrollView>
         </SafeAreaView>
       ) : (
-        <></>
+        <View>
+          <View style={{ height: "80%", alignItems: "center", justifyContent: "center" }}>
+            <Text style={{ ...FONTS.largeTitle }}>找不到結果</Text>
+            <Text style={{ ...FONTS.h1 }}>試試看搜尋不同的{type}</Text>
+          </View>
+        </View>
       )}
     </>
   );
