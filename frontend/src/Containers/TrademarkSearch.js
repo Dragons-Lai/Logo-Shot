@@ -121,7 +121,7 @@ export default function TrademarkSearch({ navigation }) {
           />
           {/* CheckBox */}
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <CheckBox checked={checked1} checkedTitle="商標名、商標上文字" onIconPress={() => setChecked1(!checked1)} onPress={() => setChecked1(!checked1)} title="商標名、商標上文字" />
+            <CheckBox checked={checked1} checkedTitle="商標名/商標上文字" onIconPress={() => setChecked1(!checked1)} onPress={() => setChecked1(!checked1)} title="商標名/商標上文字" />
             <CheckBox checked={checked2} checkedTitle="人名/公司名/地址..." onIconPress={() => setChecked2(!checked2)} onPress={() => setChecked2(!checked2)} title="人名/公司名/地址..." />
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>

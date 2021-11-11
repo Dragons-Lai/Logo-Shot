@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "LogoShot",
+    "name": "Logo Shot",
     "slug": "LogoShot",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -23,6 +23,8 @@
       }
     },
     "android": {
+      "package": "meow.logoshot",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

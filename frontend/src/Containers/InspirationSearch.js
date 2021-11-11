@@ -49,8 +49,8 @@ export default function InspirationSearch({ route, navigation }) {
       </View>
       <View style={{ height: "7%", backgroundColor: COLORS.white }}>
         <Button
-          buttonStyle={{ width: "30%" }}
-          style={{ alignItems: "center", justifyContent: "center" }}
+          buttonStyle={{ width: 150 }}
+          containerStyle={{ alignItems: "center", justifyContent: "center" }}
           disabled={disabled}
           onPress={async () => {
             if (target === -1) {
