@@ -7,6 +7,10 @@ from urllib.parse import quote
 import time
 import random
 import os
+import io
+from base64 import encodebytes
+from PIL import Image   
+from waitress import serve
 app = Flask(__name__)
 
 conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -15,6 +19,7 @@ cur.execute("SELECT caseno FROM trademark fetch first 1000 rows only")
 caseno_1000 = cur.fetchall()
 caseno_1000 = [x[0] for x in caseno_1000]
 conn.close()
+
 
 # def fetchdata(ID):
 #     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -57,9 +62,9 @@ conn.close()
 #     # plt.show()
 #     return res
 
-# @app.route('/function1', methods=["GET"])
-# def function1():
-#     return jsonify({"Hello":"World"})
+@app.route('/function1', methods=["GET"])
+def function1():
+    return jsonify({"Hello":"World"})
 
 # @app.route('/function2', methods=["GET"])
 # def function2():
@@ -67,23 +72,19 @@ conn.close()
 #     res = fetchdata(request.args["caseno"])
 #     return res
 #     # return send_file("./rabbit.jpeg", mimetype="image/jpeg")
-@app.route('/function3', methods=['POST'])
-def function3():
-    startTime = time.time()
-    # print(request.method, file=sys.stdout)   
-    print(request.form['name'], file=sys.stdout)   
-    photo = request.form["file_attachment"]
-    # print(type(photo), file=sys.stdout) # <class 'str'>
-    with open("/home/dragons/flask/backend/{}.png".format(request.form['name']), "wb") as f:
-        img = base64.decodebytes(photo.encode('ascii'))
-        f.write(img)    
-    EndTime = time.time()
-    print("Spent Time(function3): {}s".format(EndTime - startTime), file=sys.stdout)   
-    return jsonify({"status":1})
-
-import io
-from base64 import encodebytes
-from PIL import Image   
+# @app.route('/function3', methods=['POST'])
+# def function3():
+#     startTime = time.time()
+#     # print(request.method, file=sys.stdout)   
+#     print(request.form['name'], file=sys.stdout)   
+#     photo = request.form["file_attachment"]
+#     # print(type(photo), file=sys.stdout) # <class 'str'>
+#     with open("/home/dragons/flask/backend/{}.png".format(request.form['name']), "wb") as f:
+#         img = base64.decodebytes(photo.encode('ascii'))
+#         f.write(img)    
+#     EndTime = time.time()
+#     print("Spent Time(function3): {}s".format(EndTime - startTime), file=sys.stdout)   
+#     return jsonify({"status":1})
 
 # def fetchdata2(ID):
 #     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -174,35 +175,35 @@ def fetchdata3(ID):
     # print("metadata: ", result["metadata"], file=sys.stdout) 
     return result
 
-@app.route('/function4', methods=['GET'])
-def function4():
-    startTime = time.time()
-    result_list = []
-    # caseno_list = search("一蘭",10,[True,True,True])
-    # caseno_list = random.sample(caseno_1000, 10)
-    caseno_list = [105005116, 105064934, 105064461, 109045224, 100042498, 107081265, 107015025, 101053974, 107033226, 104056056]
-    # caseno_list = model.single_img_retrieve("/home/dragons/flask/backend/1635595524630.png")[:20]
-    for caseno in caseno_list:
-        result_list.append(fetchdata3(caseno))
-    base64Image_list = []
-    metadata_list = []
-    for r in result_list:
-        pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
-        byte_arr = io.BytesIO()
-        pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
-        encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
-        base64Image_list.append(encoded_img)
-        metadata_list.append(r["metadata"])
-    EndTime = time.time()
-    print("Time Spent(function4): {}s".format(EndTime - startTime), file=sys.stdout)           
-    return jsonify({
-        'base64Images': base64Image_list,
-        'metadatas': metadata_list
-    })
+# @app.route('/function4', methods=['GET'])
+# def function4():
+#     startTime = time.time()
+#     result_list = []
+#     # caseno_list = search("一蘭",10,[True,True,True])
+#     # caseno_list = random.sample(caseno_1000, 10)
+#     caseno_list = [105005116, 105064934, 105064461, 109045224, 100042498, 107081265, 107015025, 101053974, 107033226, 104056056]
+#     # caseno_list = model.single_img_retrieve("/home/dragons/flask/backend/1635595524630.png")[:20]
+#     for caseno in caseno_list:
+#         result_list.append(fetchdata3(caseno))
+#     base64Image_list = []
+#     metadata_list = []
+#     for r in result_list:
+#         pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
+#         byte_arr = io.BytesIO()
+#         pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+#         encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
+#         base64Image_list.append(encoded_img)
+#         metadata_list.append(r["metadata"])
+#     EndTime = time.time()
+#     print("Time Spent(function4): {}s".format(EndTime - startTime), file=sys.stdout)           
+#     return jsonify({
+#         'base64Images': base64Image_list,
+#         'metadatas': metadata_list
+#     })
 
-# import slimon
-# model = slimon.Model()
-# from Search import search
+import slimon
+model = slimon.Model()
+from Search import search
 
 def load_images(caseno_list):
     result_list = []
@@ -235,14 +236,14 @@ def function5():
     caseno_list1 = []
     if photo != "null":
         # print(request.form['name'], file=sys.stdout)   
-        filePath = "/home/dragons/flask/backend/{}.png".format(request.form['name'])
+        filePath = "/home/metadragons/backend/uploadedImages/{}.png".format(request.form['name'])
         print("filePath:", filePath, file=sys.stdout) 
         with open(filePath, "wb") as f:
             img = base64.decodebytes(photo.encode('ascii'))
             f.write(img)
         startTime2 = time.time()
-        caseno_list1 = random.sample(caseno_1000, 10)
-        # caseno_list1 = model.single_img_retrieve(filePath)[:20]
+        # caseno_list1 = random.sample(caseno_1000, 10)
+        caseno_list1 = model.single_img_retrieve(filePath)[:20]
         EndTime2 = time.time()
         print("Time Spent(Image_Model): {}s".format(EndTime2 - startTime2), file=sys.stdout)
     caseno_list2 = []    
@@ -257,8 +258,8 @@ def function5():
         # print("check3:", check3, file=sys.stdout) 
         # print("check4:", check4, file=sys.stdout) 
         startTime3 = time.time()
-        caseno_list2 = random.sample(caseno_1000, 10)
-        # caseno_list2 = search(searchQuery,10,[check1,check2,check3], 10)
+        # caseno_list2 = random.sample(caseno_1000, 10)
+        caseno_list2 = search(searchQuery,20,[check1,check2,check3])
         EndTime3 = time.time()
         print("Time Spent(Text_Model): {}s".format(EndTime3 - startTime3), file=sys.stdout)        
     startTime4 = time.time()    
@@ -300,5 +301,5 @@ def function6():
         'base64Images': base64Image_list,
     })
 if __name__ == "__main__":
-    from waitress import serve
+    # app.run(host='0.0.0.0', port=8081, debug=True)
     serve(app, host="0.0.0.0", port=8081)

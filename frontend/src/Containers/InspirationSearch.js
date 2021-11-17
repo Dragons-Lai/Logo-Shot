@@ -15,7 +15,7 @@ export default function InspirationSearch({ route, navigation }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setCount((count) => (count + 1) % imageList.length);
-    }, 200);
+    }, 300);
     return () => clearInterval(interval);
   }, []);
 
