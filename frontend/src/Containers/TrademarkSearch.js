@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 import { ThemeProvider, CheckBox, Button, BottomSheet, ListItem, SearchBar } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
 import { SEND_IMAGE, GET_IMAGE2, Searching } from "../api";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 const theme = {
   CheckBox: {
@@ -90,7 +91,20 @@ export default function TrademarkSearch({ navigation }) {
       <View style={styles.container}>
         <View style={{ backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Text & Button */}
-          <Text style={{ ...FONTS.h2 }}>Search by Image</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding / 6 }}>Search by Image</Text>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  "圖片搜尋",
+                  "點擊「Upload Image」按鈕可以1. 開啟相機拍攝 或是 2. 從圖庫中選擇 含有商標的照片，並可對其做裁切、旋轉等編輯。完成後按下最下方的「送出」按鈕，等待約15~20秒後，即會回傳在臺灣商標資料庫中與該照片最相似的20張商標。"
+                );
+              }}
+            >
+              <SimpleLineIcons style={{ padding: SIZES.padding / 6 }} name="question" size={24} />
+            </TouchableOpacity>
+          </View>
+
           <Text style={{ ...FONTS.h4 }}>jpg, jpeg, png, tiff & bmp</Text>
           <Button
             buttonStyle={{ width: "45%" }}
@@ -110,7 +124,19 @@ export default function TrademarkSearch({ navigation }) {
         </View>
         <View style={{ height: "35%", backgroundColor: COLORS.white, marginHorizontal: SIZES.padding / 2 }}>
           {/* Text & Searchbar */}
-          <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding / 6 }}>Trademark Text(s)</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ ...FONTS.h2, marginBottom: SIZES.padding / 6 }}>Trademark Text(s)</Text>
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  "文字搜尋",
+                  "將 與商標相關的文字 輸入至下方文字框，不同詞語可用空白隔開，並勾選該文字對應的類別(預設為全選，包含商標名稱、圖樣文字、公司相關資訊等等)。完成後按下最下方的「送出」按鈕，等待約15~20秒後，即會回傳在臺灣商標資料庫中與該文字最相似的前20張商標。"
+                );
+              }}
+            >
+              <SimpleLineIcons style={{ padding: SIZES.padding / 6 }} name="question" size={24} />
+            </TouchableOpacity>
+          </View>
           <SearchBar
             inputContainerStyle={{ backgroundColor: COLORS.white }}
             containerStyle={{ marginVertical: 7, backgroundColor: COLORS.white }}

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image, TouchableOpacity, Alert } from "react-native";
 import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 import { useFonts } from "expo-font";
 import { GET_IMAGE3 } from "../api";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 export default function HomePage3({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,11 +19,22 @@ export default function HomePage3({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={{ height: "17%", backgroundColor: COLORS.white }}></View>
+      <View style={{ height: "25%", flexDirection: "row", justifyContent: "flex-end", backgroundColor: COLORS.white }}>
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert(
+              "APP介紹",
+              "此app使用機器學習技術(ResNet152)，讓使用者拿起手機拍攝身邊含有商標的物品，就能得知該商標的詳細資訊。此外，我們還使用NLP技術(fastText)來優化文字搜尋功能，並且用GAN生成對抗網路來產生數以萬計的商標圖片，供使用者作為靈感啟發。\n\n指導教授：盧信銘老師\n組員1：賴群龍(APP開發)\n組員2：石子仙(文字搜尋)\n組員3：陳韋傑(文字搜尋)\n組員4：陳柏瑜(圖片搜尋)\n組員5：黃佳文(商標生成)"
+            );
+          }}
+        >
+          <SimpleLineIcons style={{ padding: 20 }} name="info" size={30} color="black" />
+        </TouchableOpacity>
+      </View>
       <View style={{ height: "8%", backgroundColor: COLORS.white, alignItems: "center", justifyContent: "center" }}>
         <Text style={{ color: COLORS.secondary, ...FONTS.largeTitle }}>LOGO SHOT</Text>
       </View>
-      <View style={{ height: "40%", backgroundColor: COLORS.white }}></View>
+      <View style={{ height: "32%", backgroundColor: COLORS.white }}></View>
       <View style={{ flexDirection: "row", height: "25%", backgroundColor: COLORS.white }}>
         <TouchableOpacity
           style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white, borderRadius: 100, marginHorizontal: SIZES.base * 2 }}
