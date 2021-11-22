@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, ImageStore } from "react-native";
+import { View, Text, Image, ImageStore, TouchableOpacity, Alert } from "react-native";
 import { Chip, ThemeProvider, Button } from "react-native-elements";
 import { images, icons, COLORS, FONTS, SIZES } from "../../constant/";
 import { GET_IMAGE3 } from "../api";
+import { SimpleLineIcons } from "@expo/vector-icons";
 
 export default function InspirationSearch({ route, navigation }) {
   const [imageList, setImageList] = useState(route.params.base64Images);
@@ -34,7 +35,19 @@ export default function InspirationSearch({ route, navigation }) {
   return (
     <ThemeProvider>
       <View style={{ height: "15%", alignItems: "center", justifyContent: "flex-end", backgroundColor: COLORS.white }}>
-        <Text style={{ ...FONTS.largeTitle }}>你適合哪個商標</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ ...FONTS.largeTitle }}>你適合哪個商標</Text>
+          <TouchableOpacity
+            onPress={() => {
+              Alert.alert(
+                "靈感啟發",
+                "我們使用生成對抗網路 (GAN) 自動生成了數以萬計的全新 Logo 圖案，並於此頁面中央隨機展示，供使用者作為靈感啟發。使用者可點擊下方 STOP/RESUME 按鈕切換觀看模式，以及點擊上方的標籤按鈕觀看特定的Logo類別。"
+              );
+            }}
+          >
+            <SimpleLineIcons style={{ padding: SIZES.padding / 6 }} name="question" size={24} />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={{ height: "10%", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly", backgroundColor: COLORS.white, padding: SIZES.padding / 2 }}>
         <Chip buttonStyle={{ width: 80 }} title="Circles" disabled={disabled} type={label === 0 ? "solid" : "outline"} onPress={() => clickChip(0)} />

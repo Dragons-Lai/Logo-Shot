@@ -19,19 +19,19 @@ export default function HomePage3({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={{ height: "25%", flexDirection: "row", justifyContent: "flex-end", backgroundColor: COLORS.white }}>
+      <View style={{ height: "20%", flexDirection: "row", justifyContent: "flex-end", backgroundColor: COLORS.white }}>
         <TouchableOpacity
           onPress={() => {
             Alert.alert(
-              "APP介紹",
-              "此app使用機器學習技術(ResNet152)，讓使用者拿起手機拍攝身邊含有商標的物品，就能得知該商標的詳細資訊。此外，我們還使用NLP技術(fastText)來優化文字搜尋功能，並且用GAN生成對抗網路來產生數以萬計的商標圖片，供使用者作為靈感啟發。\n\n指導教授：盧信銘老師\n組員1：賴群龍(APP開發)\n組員2：石子仙(文字搜尋)\n組員3：陳韋傑(文字搜尋)\n組員4：陳柏瑜(圖片搜尋)\n組員5：黃佳文(商標生成)"
+              "LogoShot介紹",
+              "LogoShot 是台灣唯一的商標搜尋 APP，使用者只要拿起手機拍攝身邊的商標，就能得知該商標的註冊資訊。\n我們也使用自然語言處理（NLP）技術優化文字搜尋功能，並使用生成對抗網路（GAN）產生數以萬計的商標圖片，供使用者作為靈感啟發。\n\n指導教授：盧信銘老師\n組員：賴群龍（APP開發）\n組員：石子仙（文字搜尋）\n組員：陳韋傑（文字搜尋）\n組員：陳柏瑜（圖片搜尋）\n組員：黃佳文（商標生成）"
             );
           }}
         >
           <SimpleLineIcons style={{ padding: 20 }} name="info" size={30} color="black" />
         </TouchableOpacity>
       </View>
-      <View style={{ height: "8%", backgroundColor: COLORS.white, alignItems: "center", justifyContent: "center" }}>
+      <View style={{ height: "13%", backgroundColor: COLORS.white, alignItems: "center", justifyContent: "center" }}>
         <Text style={{ color: COLORS.secondary, ...FONTS.largeTitle }}>LOGO SHOT</Text>
       </View>
       <View style={{ height: "32%", backgroundColor: COLORS.white }}></View>
