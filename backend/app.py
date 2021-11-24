@@ -11,6 +11,8 @@ import io
 from base64 import encodebytes
 from PIL import Image   
 from waitress import serve
+import pandas as pd
+from functools import reduce
 app = Flask(__name__)
 
 conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
@@ -144,6 +146,18 @@ def sql_command(cur, colnames, tablename, caseno):
         WHERE caseno = {}".format(colnames, tablename, caseno))    
     return cur.fetchall()
 
+def sql_command2(cur, colnames, tablename, caseno_list):
+    selected = ",".join(colnames)
+    conditions = " OR ".join(["caseno = " + str(x) for x in caseno_list])
+    # print(colnames)
+    # print("conditions: ", conditions, file=sys.stdout)
+    # print("SQL: ", "SELECT {} FROM {} WHERE {}".format(selected, tablename, conditions), file=sys.stdout)
+    cur.execute("SELECT {} FROM {} WHERE {}".format(selected, tablename, conditions))
+    df = pd.DataFrame(cur.fetchall()).astype(str)
+    df.columns = colnames
+    df = df.groupby(df['caseno'], as_index=False).aggregate(lambda x: "/".join(x))
+    return df
+
 def fetchdata3(ID):
     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
     cur = conn.cursor()
@@ -174,6 +188,34 @@ def fetchdata3(ID):
     result["metadata"] = metadata
     # print("metadata: ", result["metadata"], file=sys.stdout) 
     return result
+
+def fetchdata4(caseno_list): 
+    conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
+    cur = conn.cursor()
+    main_df = sql_command2(cur, trademark_columns, "trademark", caseno_list)
+    rca_df = sql_command2(cur, rca_columns, "rca", caseno_list)
+    rcc_df = sql_command2(cur, rcc_columns, "rcc", caseno_list)
+    rco_df = sql_command2(cur, rco_columns, "rco", caseno_list)
+    rcp_df = sql_command2(cur, rcp_columns, "rcp", caseno_list)
+    conn.close()
+
+    # display("main_df:", main_df)
+    # display("rca_df:", rca_df)
+    # display("rcc_df:", rcc_df)
+    # display("rco_df:", rco_df)
+    # display("rcp_df:", rcp_df)
+
+    df_all = reduce(lambda left,right: pd.merge(left,right,how='left',on='caseno'), [main_df,rca_df,rcc_df,rco_df,rcp_df]).astype(str)
+    # display(df_all)
+    result_list = []
+    for i in df_all.to_dict(orient='records'):
+        result = dict()
+        result["Path"] = '/service/trademark/raw_register_data/' + i['doc'] + "/" + i['filename']
+        # print("Path: ", result["Path"], file=sys.stdout)
+        result["metadata"] = i
+        # print("metadata: ", result["metadata"], file=sys.stdout)    
+        result_list.append(result)
+    return result_list    
 
 # @app.route('/function4', methods=['GET'])
 # def function4():
@@ -208,17 +250,20 @@ from Search import search
 def load_images(caseno_list):
     result_list = []
     # caseno_list = [99018887, 100048442, 100006294, 100036013, 100015475, 100045485, 100053242, 100053158, 98017486, 100048244, 100034136, 100015575, 99059834, 100039852, 100020857, 100039089, 100015683, 100030430, 99059734, 100050261, 100041025, 100034969, 100058002, 100035279, 100047596, 100048242, 100047022, 100033212, 100047019, 100048739, 99056287, 99042253, 99022071, 100018260, 100043720, 100035291, 99061105, 99055598, 100055899, 100022190, 100037752, 100032097, 98030087, 100041404, 100034168, 100012916, 99040055, 100047249, 100037818, 100046101, 100000214, 100039351, 100043045, 100046931, 100040241, 100010120, 99057907, 100036572, 100035000, 100027168, 100037388, 99042111, 100028773, 100032160, 100018054, 100001572, 99038458, 100040028, 100008473, 99054248, 100040320, 100034946, 100029091, 100038959, 99035163, 100027546, 99041348, 100021585, 99059678, 97049456, 100053398, 100022946, 100040031, 100028393, 100039333, 100010723, 100034580, 100046150, 100041676, 100030440, 99057980, 100036995, 100045130, 100025812, 100036394, 100015200, 100044424, 100021701, 100040164, 100040873]
-    for caseno in caseno_list:
-        result_list.append(fetchdata3(caseno))       
+    # for caseno in caseno_list:
+    #     result_list.append(fetchdata3(caseno))       
+    if(len(caseno_list) != 0):
+        result_list = fetchdata4(caseno_list)    
     base64Image_list = []
     metadata_list = []
     for r in result_list:
         try:
             # print('r["Path"]: ', r["Path"], file=sys.stdout)   
+            # print('r["metadata"]: ', r["metadata"], file=sys.stdout)            
             pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
             # print(os.path.getsize(r["Path"]))
             byte_arr = io.BytesIO()
-            pil_img.save(byte_arr, format='PNG') # convert the PIL image to byte array
+            pil_img.save(byte_arr, format='PNG', quality = 25) # convert the PIL image to byte array
             encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
             base64Image_list.append(encoded_img)
             metadata_list.append(r["metadata"])
@@ -242,8 +287,8 @@ def function5():
             img = base64.decodebytes(photo.encode('ascii'))
             f.write(img)
         startTime2 = time.time()
-        # caseno_list1 = random.sample(caseno_1000, 10)
-        caseno_list1 = model.single_img_retrieve(filePath)[:20]
+        # caseno_list1 = random.sample(caseno_1000, 50)
+        caseno_list1 = model.single_img_retrieve(filePath)[:50]
         EndTime2 = time.time()
         print("Time Spent(Image_Model): {}s".format(EndTime2 - startTime2), file=sys.stdout)
     caseno_list2 = []    
@@ -258,7 +303,7 @@ def function5():
         # print("check3:", check3, file=sys.stdout) 
         # print("check4:", check4, file=sys.stdout) 
         startTime3 = time.time()
-        # caseno_list2 = random.sample(caseno_1000, 10)
+        # caseno_list2 = random.sample(caseno_1000, 20)
         caseno_list2 = search(searchQuery,20,[check1,check2,check3])
         EndTime3 = time.time()
         print("Time Spent(Text_Model): {}s".format(EndTime3 - startTime3), file=sys.stdout)        
