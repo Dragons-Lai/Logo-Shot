@@ -138,13 +138,13 @@ rco_columns = ["caseno", "achinese", "aenglish", "address"]
 # rcp(picture)
 rcp_columns = ["caseno", "filename", "displayname", "path"]
 
-def sql_command(cur, colnames, tablename, caseno):
-    colnames = ",".join(colnames)
-    cur.execute(
-        "SELECT {} \
-        FROM {} \
-        WHERE caseno = {}".format(colnames, tablename, caseno))    
-    return cur.fetchall()
+# def sql_command(cur, colnames, tablename, caseno):
+#     colnames = ",".join(colnames)
+#     cur.execute(
+#         "SELECT {} \
+#         FROM {} \
+#         WHERE caseno = {}".format(colnames, tablename, caseno))    
+#     return cur.fetchall()
 
 def sql_command2(cur, colnames, tablename, caseno_list):
     selected = ",".join(colnames)
@@ -158,36 +158,36 @@ def sql_command2(cur, colnames, tablename, caseno_list):
     df = df.groupby(df['caseno'], as_index=False).aggregate(lambda x: "/".join(x))
     return df
 
-def fetchdata3(ID):
-    conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
-    cur = conn.cursor()
-    main = sql_command(cur, trademark_columns, "trademark", str(ID))
-    rca = sql_command(cur, rca_columns, "rca", str(ID))
-    rcc = sql_command(cur, rcc_columns, "rcc", str(ID))
-    rco = sql_command(cur, rco_columns, "rco", str(ID))
-    rcp = sql_command(cur, rcp_columns, "rcp", str(ID))
-    conn.close()
-#     print("main: ", main)
-#     print("rca: ", rca)
-#     print("rcc: ", rcc)
-#     print("rco: ", rco)
-#     print("rcp: ", rcp)    
+# def fetchdata3(ID):
+#     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
+#     cur = conn.cursor()
+#     main = sql_command(cur, trademark_columns, "trademark", str(ID))
+#     rca = sql_command(cur, rca_columns, "rca", str(ID))
+#     rcc = sql_command(cur, rcc_columns, "rcc", str(ID))
+#     rco = sql_command(cur, rco_columns, "rco", str(ID))
+#     rcp = sql_command(cur, rcp_columns, "rcp", str(ID))
+#     conn.close()
+# #     print("main: ", main)
+# #     print("rca: ", rca)
+# #     print("rcc: ", rcc)
+# #     print("rco: ", rco)
+# #     print("rcp: ", rcp)    
     
-    metadata = dict()
-    data_list = [main, rca, rcc, rco, rcp]
-    columns_list = [trademark_columns, rca_columns, rcc_columns, rco_columns, rcp_columns]
-    for data, columns in zip(data_list, columns_list):
-        for i in range(len(columns)):
-            metadata[columns[i]] = "/".join([str(d[i]) for d in data])
-#             print(metadata[columns[i]])
-    metadata["caseno"] = str(ID)
+#     metadata = dict()
+#     data_list = [main, rca, rcc, rco, rcp]
+#     columns_list = [trademark_columns, rca_columns, rcc_columns, rco_columns, rcp_columns]
+#     for data, columns in zip(data_list, columns_list):
+#         for i in range(len(columns)):
+#             metadata[columns[i]] = "/".join([str(d[i]) for d in data])
+# #             print(metadata[columns[i]])
+#     metadata["caseno"] = str(ID)
 
-    result = dict()
-    result["Path"] = '/service/trademark/raw_register_data/' + metadata['doc'] + "/" + metadata['filename']
-    # print("Path: ", result["Path"], file=sys.stdout)
-    result["metadata"] = metadata
-    # print("metadata: ", result["metadata"], file=sys.stdout) 
-    return result
+#     result = dict()
+#     result["Path"] = '/service/trademark/raw_register_data/' + metadata['doc'] + "/" + metadata['filename']
+#     # print("Path: ", result["Path"], file=sys.stdout)
+#     result["metadata"] = metadata
+#     # print("metadata: ", result["metadata"], file=sys.stdout) 
+#     return result
 
 def fetchdata4(caseno_list): 
     conn = psycopg2.connect(database="trademark1", user="tm_root", password="roottm_9823a", host="trueint.lu.im.ntu.edu.tw", port="5433")
