@@ -137,6 +137,8 @@ rcc_columns = ["caseno", "enforcement_rules", "class", "goods_denomination"]
 rco_columns = ["caseno", "achinese", "aenglish", "address"]
 # rcp(picture)
 rcp_columns = ["caseno", "filename", "displayname", "path"]
+# text
+text_columns = ["caseno", "chinese", "english", "japanese"]
 
 # def sql_command(cur, colnames, tablename, caseno):
 #     colnames = ",".join(colnames)
@@ -197,6 +199,7 @@ def fetchdata4(caseno_list):
     rcc_df = sql_command2(cur, rcc_columns, "rcc", caseno_list)
     rco_df = sql_command2(cur, rco_columns, "rco", caseno_list)
     rcp_df = sql_command2(cur, rcp_columns, "rcp", caseno_list)
+    text_df = sql_command2(cur, text_columns, "text", caseno_list)
     conn.close()
 
     # display("main_df:", main_df)
@@ -205,7 +208,7 @@ def fetchdata4(caseno_list):
     # display("rco_df:", rco_df)
     # display("rcp_df:", rcp_df)
 
-    df_all = reduce(lambda left,right: pd.merge(left,right,how='left',on='caseno'), [main_df,rca_df,rcc_df,rco_df,rcp_df]).astype(str)
+    df_all = reduce(lambda left,right: pd.merge(left,right,how='left',on='caseno'), [main_df,rca_df,rcc_df,rco_df,rcp_df, text_df]).astype(str)
     # display(df_all)
     result_list = []
     for i in df_all.to_dict(orient='records'):
@@ -263,7 +266,7 @@ def load_images(caseno_list):
             pil_img = Image.open(r["Path"], mode='r') # reads the PIL image
             # print(os.path.getsize(r["Path"]))
             byte_arr = io.BytesIO()
-            pil_img.save(byte_arr, format='PNG', quality = 25) # convert the PIL image to byte array
+            pil_img.save(byte_arr, format='PNG', quality = 10) # convert the PIL image to byte array
             encoded_img = encodebytes(byte_arr.getvalue()).decode('ascii') # encode as base64        
             base64Image_list.append(encoded_img)
             metadata_list.append(r["metadata"])

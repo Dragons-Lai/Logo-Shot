@@ -41,7 +41,7 @@ export default function InspirationSearch({ route, navigation }) {
             onPress={() => {
               Alert.alert(
                 "靈感啟發",
-                "我們使用生成對抗網路 (GAN) 自動生成了數以萬計的全新 Logo 圖案，並於此頁面中央隨機展示，供使用者作為靈感啟發。使用者可點擊下方 STOP/RESUME 按鈕切換觀看模式，以及點擊上方的標籤按鈕觀看特定的Logo類別。"
+                "我們使用生成對抗網路 (GAN) 自動生成了數以萬計的全新 Logo 圖案，並於此頁面中央隨機展示，供使用者作為靈感啟發。使用者可點擊下方 STOP / RESUME 按鈕切換觀看模式，以及點擊上方的標籤按鈕觀看特定的Logo類別。"
               );
             }}
           >
