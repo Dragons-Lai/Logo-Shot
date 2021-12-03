@@ -23,7 +23,7 @@ export default function HomePage3({ navigation }) {
         <TouchableOpacity
           onPress={() => {
             Alert.alert(
-              "LogoShot介紹",
+              "LogoShot 介紹",
               "LogoShot 是台灣最好用的商標搜尋 APP，使用者只要拿起手機拍攝身邊的商標，就能得知該商標的註冊資訊。\n我們也使用自然語言處理（NLP）技術優化文字搜尋功能，並使用生成對抗網路（GAN）產生數以萬計的商標圖片，供使用者作為靈感啟發。\n\n指導教授：盧信銘老師\n組員：賴群龍（APP開發）\n組員：石子仙（文字搜尋）\n組員：陳韋傑（文字搜尋）\n組員：陳柏瑜（圖片搜尋）\n組員：黃佳文（商標生成）"
             );
           }}

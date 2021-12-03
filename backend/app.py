@@ -206,8 +206,11 @@ def fetchdata4(caseno_list):
     # display("rcc_df:", rcc_df)
     # display("rco_df:", rco_df)
     # display("rcp_df:", rcp_df)
-
+    caseno_list = [str(x) for x in caseno_list]
     df_all = reduce(lambda left,right: pd.merge(left,right,how='left',on='caseno'), [main_df,rca_df,rcc_df,rco_df,rcp_df, text_df]).astype(str)
+    df_all = df_all.set_index('caseno')
+    df_all = df_all.reindex(caseno_list)
+    df_all = df_all.reset_index()
     # display(df_all)
     result_list = []
     for i in df_all.to_dict(orient='records'):
@@ -217,7 +220,7 @@ def fetchdata4(caseno_list):
         result["metadata"] = i
         # print("metadata: ", result["metadata"], file=sys.stdout)    
         result_list.append(result)
-    return result_list    
+    return result_list      
 
 # @app.route('/function4', methods=['GET'])
 # def function4():
@@ -318,6 +321,7 @@ def function5():
         startTime2 = time.time()
         # caseno_list1 = random.sample(caseno_1000, 50)
         caseno_list1 = model.single_img_retrieve(filePath)[:50]
+        # print("caseno_list1:", caseno_list1, file=sys.stdout) 
         EndTime2 = time.time()
         print("Time Spent(Image_Model): {}s".format(EndTime2 - startTime2), file=sys.stdout)
     caseno_list2 = []    
@@ -334,6 +338,7 @@ def function5():
         startTime3 = time.time()
         # caseno_list2 = random.sample(caseno_1000, 20)
         caseno_list2 = search(searchQuery,50,[check1,check2,check3])
+        # print("caseno_list2:", caseno_list2, file=sys.stdout) 
         EndTime3 = time.time()
         print("Time Spent(Text_Model): {}s".format(EndTime3 - startTime3), file=sys.stdout)        
     startTime4 = time.time()
