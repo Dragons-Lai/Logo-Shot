@@ -36,7 +36,7 @@ export default function InspirationSearch({ route, navigation }) {
     <ThemeProvider>
       <View style={{ height: "15%", alignItems: "center", justifyContent: "flex-end", backgroundColor: COLORS.white }}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ ...FONTS.largeTitle }}>你適合哪個商標</Text>
+          <Text style={{ ...FONTS.mediumTitle }}>你適合哪個商標</Text>
           <TouchableOpacity
             onPress={() => {
               Alert.alert(

@@ -32,6 +32,7 @@ export const SIZES = {
   // Font sizes
   superlargeTitle: 52,
   largeTitle: 44,
+  mediumTitle: 38,
   h1: 30,
   h2: 22,
   h3: 16,
@@ -49,6 +50,7 @@ export const SIZES = {
 export const FONTS = {
   superlargeTitle: { fontFamily: "Roboto-Black", fontSize: SIZES.superlargeTitle, lineHeight: 55 },
   largeTitle: { fontFamily: "Roboto-Black", fontSize: SIZES.largeTitle, lineHeight: 55 },
+  mediumTitle: { fontFamily: "Roboto-Black", fontSize: SIZES.mediumTitle, lineHeight: 55 },
   h1: { fontFamily: "Roboto-Black", fontSize: SIZES.h1, lineHeight: 36 },
   h2: { fontFamily: "Roboto-Bold", fontSize: SIZES.h2, lineHeight: 30 },
   h3: { fontFamily: "Roboto-Bold", fontSize: SIZES.h3, lineHeight: 22 },
