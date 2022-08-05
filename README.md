@@ -14,7 +14,9 @@
 主畫面|搜尋頁面|
 -|-|
 <img src="https://i.imgur.com/6F3DvqC.png" height="500" />|<img src="https://i.imgur.com/1QII33x.png" height="500" />|
+
 搜尋結果頁面|靈感啟發頁面|
+-|-|
 <img src="https://i.imgur.com/y9GLxv9.png" height="500" />|<img src="https://i.imgur.com/iozkqMv.png" height="500" />|
 
 ## 下載連結
