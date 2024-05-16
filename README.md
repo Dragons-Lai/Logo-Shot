@@ -20,7 +20,7 @@ Search Results Page|Inspiration Page|
 ## Download Link
 Google Play：https://play.google.com/store/apps/details?id=meow.logoshot
 
-Note: Due to budget constraints, the backend server is currently shut down. Please see the actual demo in the [video](#Introduction_Video) section below。
+Note: Due to budget constraints, the backend server is currently shut down. Please refer to the [demo video](https://www.youtube.com/watch?v=RFrpexPjAhY&ab_channel=%E8%B3%B4%E7%BE%A4%E9%BE%8D).
 
 <img src="https://i.imgur.com/tzqdG13.png" height="500" />
 
